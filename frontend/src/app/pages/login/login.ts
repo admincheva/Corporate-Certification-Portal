@@ -35,11 +35,23 @@ export class LoginComponent {
   login() {
 
     this.authService.login(this.form.value)
-      .subscribe(response => {
+      .subscribe({
 
-        console.log(response);
+        next: (response) => {
 
-        alert('Login successful');
+          console.log(response);
+
+          alert('Login successful');
+
+        },
+
+        error: (error) => {
+
+          console.error(error);
+
+          alert('Invalid username or password');
+
+        }
 
       });
   }
