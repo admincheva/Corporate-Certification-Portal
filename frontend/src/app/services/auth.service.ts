@@ -6,29 +6,26 @@ import { HttpClient } from '@angular/common/http';
 })
 export class AuthService {
 
-  private apiUrl = 'http://localhost:8080/auth';
+  private api =
+    'http://localhost:8080/auth';
 
-  constructor(private http: HttpClient) {}
-
-  register(data: any) {
-
-    return this.http.post(
-      `${this.apiUrl}/register`,
-      data,
-      {
-        responseType: 'text'
-      }
-    );
-  }
+  constructor(
+    private http: HttpClient
+  ) {}
 
   login(data: any) {
 
     return this.http.post(
-      `${this.apiUrl}/login`,
-      data,
-      {
-        responseType: 'text'
-      }
+      `${this.api}/login`,
+      data
+    );
+  }
+
+  register(data: any) {
+
+    return this.http.post(
+      `${this.api}/register`,
+      data
     );
   }
 }

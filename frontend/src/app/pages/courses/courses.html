@@ -1,0 +1,18 @@
+<div class="container mt-5">
+
+  <h2 class="mb-4">Courses</h2>
+
+  <div class="card mb-3 p-3"
+       *ngFor="let course of courses">
+
+    <h4>{{course.title}}</h4>
+
+    <p>{{course.description}}</p>
+
+    <p><strong>Provider:</strong> {{course.provider}}</p>
+
+    <p><strong>Price:</strong> ${{course.price}}</p>
+
+  </div>
+
+</div>

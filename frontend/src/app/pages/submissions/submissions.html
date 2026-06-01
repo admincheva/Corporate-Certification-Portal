@@ -1,0 +1,18 @@
+<div class="container mt-5">
+
+  <h2 class="mb-4">Certificate Submissions</h2>
+
+  <div class="card p-3 mb-3"
+       *ngFor="let submission of submissions">
+
+    <h5>{{submission.user.fullName}}</h5>
+
+    <p>Certificate Number: {{submission.certificateNumber}}</p>
+
+    <p>Status: {{submission.status}}</p>
+
+    <p>Amount Paid: ${{submission.amountPaid}}</p>
+
+  </div>
+
+</div>

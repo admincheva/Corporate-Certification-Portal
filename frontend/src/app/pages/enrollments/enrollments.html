@@ -1,0 +1,16 @@
+<div class="container mt-5">
+
+  <h2 class="mb-4">Enrollments</h2>
+
+  <div class="card p-3 mb-3"
+       *ngFor="let enrollment of enrollments">
+
+    <h5>{{enrollment.course.title}}</h5>
+
+    <p>{{enrollment.user.fullName}}</p>
+
+    <p>Status: {{enrollment.status}}</p>
+
+  </div>
+
+</div>

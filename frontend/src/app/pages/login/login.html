@@ -1,25 +1,164 @@
-<h2>Login</h2>
+<div class="login-page">
 
-<form [formGroup]="form" (ngSubmit)="login()">
+  <!-- LEFT SIDE -->
 
-  <input
-    type="text"
-    formControlName="username"
-    placeholder="Username"
-  />
+  <div class="left-panel">
 
-  <br><br>
+    <div class="brand">
 
-  <input
-    type="password"
-    formControlName="password"
-    placeholder="Password"
-  />
+      <div class="logo-box">
+        🎓
+      </div>
 
-  <br><br>
+      <div>
+        <h1>CorpLearn</h1>
+        <p>Corporate Learning & Certification Portal</p>
+      </div>
 
-  <button type="submit">
-    Login
+    </div>
+
+    <div class="hero">
+
+      <h2>
+        Grow Your Skills,<br>
+        <span>Advance Your Career</span>
+      </h2>
+
+      <p>
+        Discover expert-led courses, earn industry-recognized
+        certifications and get reimbursed for your learning.
+      </p>
+
+    </div>
+
+    <div class="features">
+
+      <div class="feature">
+
+        <div class="feature-icon">
+          📖
+        </div>
+
+        <h3>Browse Courses</h3>
+
+        <p>
+          Explore a wide range of professional courses.
+        </p>
+
+      </div>
+
+      <div class="feature">
+
+        <div class="feature-icon">
+          🏆
+        </div>
+
+        <h3>Earn Certifications</h3>
+
+        <p>
+          Complete courses and earn valuable certifications.
+        </p>
+
+      </div>
+
+      <div class="feature">
+
+        <div class="feature-icon">
+          💰
+        </div>
+
+        <h3>Get Reimbursed</h3>
+
+        <p>
+          Submit certificates and get reimbursed quickly.
+        </p>
+
+      </div>
+
+    </div>
+
+  </div>
+
+  <!-- RIGHT SIDE -->
+
+  <div class="right-panel">
+
+    <div class="login-card">
+
+      <h2>Welcome Back</h2>
+
+      <p class="subtitle">
+        Sign in to your account to continue
+      </p>
+
+<form
+  [formGroup]="form"
+  (ngSubmit)="login()"
+>
+
+  <div class="form-group">
+
+    <label>Username</label>
+
+    <input
+      type="text"
+      formControlName="username"
+      placeholder="Enter your username">
+
+    @if(form.get('username')?.invalid &&
+        form.get('username')?.touched){
+
+      <small class="error">
+        Username is required
+      </small>
+
+    }
+
+  </div>
+
+  <div class="form-group">
+
+    <label>Password</label>
+
+    <input
+      type="password"
+      formControlName="password"
+      placeholder="Enter your password">
+
+    @if(form.get('password')?.invalid &&
+        form.get('password')?.touched){
+
+      <small class="error">
+        Password is required
+      </small>
+
+    }
+
+  </div>
+
+  <button
+    type="submit"
+    class="login-btn"
+    [disabled]="form.invalid">
+
+    Sign In →
+
   </button>
 
 </form>
+
+      <div class="register-link">
+
+        Don't have an account?
+
+        <a href="#">
+          Create Account
+        </a>
+
+      </div>
+
+    </div>
+
+  </div>
+
+</div>

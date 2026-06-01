@@ -1,3 +1,4 @@
+import { Router } from '@angular/router';
 import { Component } from '@angular/core';
 
 import {
@@ -14,34 +15,60 @@ import { AuthService } from '../../services/auth.service';
   standalone: true,
   imports: [ReactiveFormsModule],
   templateUrl: './login.html',
-  styleUrl: './login.css'
+  styleUrls: ['./login.css']
 })
 export class LoginComponent {
 
   form!: FormGroup;
 
   constructor(
-    private fb: FormBuilder,
-    private authService: AuthService
-  ) {
+  private fb: FormBuilder,
+  private authService: AuthService,
+  private router: Router
+) {
 
-    this.form = this.fb.group({
-      username: ['', Validators.required],
-      password: ['', Validators.required]
-    });
+  this.form = this.fb.group({
 
+    username: [
+      '',
+      Validators.required
+    ],
+
+    password: [
+      '',
+      Validators.required
+    ]
+
+  });
+
+} 
+
+
+
+login() {
+
+  if (this.form.invalid) {
+
+    this.form.markAllAsTouched();
+    return;
   }
 
-  login() {
-
-    this.authService.login(this.form.value)
+  this.authService
+      .login(this.form.value)
       .subscribe({
 
         next: (response) => {
 
           console.log(response);
 
-          alert('Login successful');
+          localStorage.setItem(
+            'user',
+            JSON.stringify(response)
+          );
+
+          this.router.navigate([
+            '/dashboard'
+          ]);
 
         },
 
@@ -49,10 +76,12 @@ export class LoginComponent {
 
           console.error(error);
 
-          alert('Invalid username or password');
+          alert(
+            'Invalid username or password'
+          );
 
         }
 
       });
-  }
+}
 }
