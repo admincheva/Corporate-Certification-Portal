@@ -1,8 +1,9 @@
-package org.example.corporatecertificationportal.auth;
+package org.example.corporatecertificationportal.controller;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.example.corporatecertificationportal.dto.LoginDTO;
+import org.example.corporatecertificationportal.dto.RegisterDTO;
 import org.example.corporatecertificationportal.service.AuthService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -19,7 +20,7 @@ public class AuthController {
     public ResponseEntity<String> register(
             @Valid
             @RequestBody
-            com.example.portal.dto.RegisterDTO request
+            RegisterDTO request
     ) {
 
         return ResponseEntity.ok(

@@ -1,7 +1,9 @@
 package org.example.corporatecertificationportal.service;
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.example.corporatecertificationportal.dto.LoginDTO;
+import org.example.corporatecertificationportal.dto.RegisterDTO;
 import org.example.corporatecertificationportal.entity.User;
 import org.example.corporatecertificationportal.repository.UserRepository;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -16,7 +18,7 @@ public class AuthService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
 
-    public String register(com.example.portal.dto.RegisterDTO request) {
+    public String register(@Valid RegisterDTO request) {
 
         if (userRepository.findByUsername(request.getUsername()).isPresent()) {
             return "User already exists";

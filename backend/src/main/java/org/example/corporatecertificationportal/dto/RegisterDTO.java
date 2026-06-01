@@ -1,4 +1,4 @@
-package com.example.portal.dto;
+package org.example.corporatecertificationportal.dto;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
