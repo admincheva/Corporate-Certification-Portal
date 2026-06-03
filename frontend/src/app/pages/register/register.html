@@ -1,25 +1,105 @@
-<h2>Register</h2>
+<div class="register-page">
 
-<form [formGroup]="form" (ngSubmit)="register()">
+  <div class="left-panel">
 
-  <input
-    type="text"
-    formControlName="username"
-    placeholder="Username"
-  />
+    <div class="brand">
 
-  <br><br>
+      <div class="logo-box">
+        🎓
+      </div>
 
-  <input
-    type="password"
-    formControlName="password"
-    placeholder="Password"
-  />
+      <div>
+        <h1>CorpLearn</h1>
+        <p>Corporate Learning & Certification Portal</p>
+      </div>
 
-  <br><br>
+    </div>
 
-  <button type="submit">
-    Register
-  </button>
+    <div class="hero">
 
-</form>
+      <h2>
+        Start Your
+        <span>Learning Journey</span>
+      </h2>
+
+      <p>
+        Create your account and begin earning
+        professional certifications.
+      </p>
+
+    </div>
+
+  </div>
+
+  <div class="right-panel">
+
+    <div class="register-card">
+
+      <h2>Create Account</h2>
+
+      <p class="subtitle">
+        Register to continue
+      </p>
+
+      <form
+        [formGroup]="form"
+        (ngSubmit)="register()">
+
+        <div class="form-group">
+
+          <label>Username</label>
+
+          <input
+            type="text"
+            formControlName="username"
+            placeholder="Enter username">
+
+        </div>
+
+        <div class="form-group">
+
+          <label>Password</label>
+
+          <input
+            type="password"
+            formControlName="password"
+            placeholder="Enter password">
+
+        </div>
+
+        <div class="form-group">
+
+          <label>Confirm Password</label>
+
+          <input
+            type="password"
+            formControlName="confirmPassword"
+            placeholder="Confirm password">
+
+        </div>
+
+        <button
+          type="submit"
+          class="register-btn">
+
+          Create Account
+
+        </button>
+
+      </form>
+
+      <div class="login-link">
+
+        Already have an account?
+
+        <a routerLink="/">
+          Sign In
+        </a>
+
+      </div>
+
+    </div>
+
+  </div>
+
+</div>

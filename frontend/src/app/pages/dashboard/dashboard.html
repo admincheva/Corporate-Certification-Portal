@@ -1,0 +1,105 @@
+<div class="dashboard-layout">
+
+  <aside class="sidebar">
+
+    <div class="logo">
+      🎓 CorpLearn
+    </div>
+
+    <nav>
+
+      <a class="active">
+        Dashboard
+      </a>
+
+      <a>
+        Browse Courses
+      </a>
+
+      <a>
+        My Learning
+      </a>
+
+      <a>
+        My Submissions
+      </a>
+
+    </nav>
+
+  </aside>
+
+  <main class="content">
+
+    <div class="header">
+
+      <div>
+
+        <h1>
+          Welcome {{ dashboard?.username }}
+          👋
+        </h1>
+
+        <p>
+          Continue your learning journey
+        </p>
+
+      </div>
+
+    </div>
+
+    <!-- DASHBOARD STATS -->
+
+    <div class="stats">
+
+      <div class="card">
+
+        <h2>
+          {{ dashboard?.enrolledCourses || 0 }}
+        </h2>
+
+        <span>
+          Enrolled Courses
+        </span>
+
+      </div>
+
+      <div class="card">
+
+        <h2>
+          {{ dashboard?.completedCourses || 0 }}
+        </h2>
+
+        <span>
+          Completed Courses
+        </span>
+
+      </div>
+
+    </div>
+
+    <!-- EMPTY STATE -->
+
+    <div class="section">
+
+      <h2>
+        My Learning Progress
+      </h2>
+
+      <div class="empty-card">
+
+        <h3>
+          Learning Dashboard
+        </h3>
+
+        <p>
+          Here you will see your enrolled courses,
+          certifications and learning progress.
+        </p>
+
+      </div>
+
+    </div>
+
+  </main>
+
+</div>

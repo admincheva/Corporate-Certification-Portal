@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { Router, RouterLink } from '@angular/router';
 
 import {
   FormBuilder,
@@ -12,47 +13,91 @@ import { AuthService } from '../../services/auth.service';
 @Component({
   selector: 'app-register',
   standalone: true,
-  imports: [ReactiveFormsModule],
+  imports: [
+    ReactiveFormsModule,
+    RouterLink
+  ],
   templateUrl: './register.html',
-  styleUrl: './register.css'
+  styleUrls: ['./register.css']
 })
 export class RegisterComponent {
 
-  form!: FormGroup;
+  form: FormGroup;
 
   constructor(
     private fb: FormBuilder,
-    private authService: AuthService
+    private authService: AuthService,
+    private router: Router
   ) {
 
     this.form = this.fb.group({
-      username: ['', Validators.required],
-      password: ['', Validators.required]
+
+      username: [
+        '',
+        Validators.required
+      ],
+
+      password: [
+        '',
+        Validators.required
+      ],
+
+      confirmPassword: [
+        '',
+        Validators.required
+      ]
+
     });
 
   }
 
-  register() {
+  register(): void {
 
-    this.authService.register(this.form.value)
-      .subscribe({
+    if (this.form.invalid) {
 
-        next: (response) => {
+      this.form.markAllAsTouched();
+      return;
+    }
 
-          console.log(response);
+    const password =
+      this.form.get('password')?.value;
 
-          alert('User registered successfully');
+    const confirmPassword =
+      this.form.get('confirmPassword')?.value;
 
-        },
+    if (password !== confirmPassword) {
 
-        error: (error) => {
+      alert('Passwords do not match');
+      return;
+    }
 
-          console.error(error);
+    this.authService.register({
 
-          alert('Register failed');
+      username:
+        this.form.get('username')?.value,
 
-        }
+      password
 
-      });
+    }).subscribe({
+
+      next: () => {
+
+        alert(
+          'Registration successful'
+        );
+
+        this.router.navigate(['/']);
+
+      },
+
+      error: (error: any) => {
+
+        console.error(error);
+
+        alert('Registration failed');
+
+      }
+
+    });
   }
 }
