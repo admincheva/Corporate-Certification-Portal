@@ -1,6 +1,8 @@
 package org.example.corporatecertificationportal.service;
 
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
 import lombok.RequiredArgsConstructor;
 import org.example.corporatecertificationportal.dto.LoginDTO;
 import org.example.corporatecertificationportal.dto.RegisterDTO;
@@ -36,26 +38,31 @@ public class AuthService {
         return "User registered successfully";
     }
 
-    public String login(LoginDTO request) {
+    public User login(LoginDTO request) {
 
-        Optional<User> optionalUser =
-                userRepository.findByUsername(request.getUsername());
+        User user = userRepository
+                .findByUsername(
+                        request.getUsername()
+                )
+                .orElseThrow(
+                        () -> new RuntimeException(
+                                "User not found"
+                        )
+                );
 
-        if (optionalUser.isEmpty()) {
-            return "Invalid username or password";
+        boolean validPassword =
+                passwordEncoder.matches(
+                        request.getPassword(),
+                        user.getPassword()
+                );
+
+        if (!validPassword) {
+
+            throw new RuntimeException(
+                    "Invalid username or password"
+            );
         }
 
-        User user = optionalUser.get();
-
-        boolean matches = passwordEncoder.matches(
-                request.getPassword(),
-                user.getPassword()
-        );
-
-        if (!matches) {
-            return "Invalid username or password";
-        }
-
-        return "Login successful";
+        return user;
     }
 }

@@ -4,9 +4,12 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.example.corporatecertificationportal.dto.LoginDTO;
 import org.example.corporatecertificationportal.dto.RegisterDTO;
+import org.example.corporatecertificationportal.entity.User;
 import org.example.corporatecertificationportal.service.AuthService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.Map;
 
 @RestController
 @RequestMapping("/auth")
@@ -29,14 +32,11 @@ public class AuthController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<String> login(
-            @Valid
-            @RequestBody
-            LoginDTO request
-    ) {
+    public ResponseEntity<?> login(@RequestBody LoginDTO request) {
 
-        return ResponseEntity.ok(
-                authService.login(request)
+        User user = authService.login(request);
+
+        return ResponseEntity.ok(Map.of("username", user.getUsername())
         );
     }
 }
