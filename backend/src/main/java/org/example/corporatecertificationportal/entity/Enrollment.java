@@ -17,12 +17,15 @@ public class Enrollment {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "course_id", nullable = false)
     private Course course;
 
+    @Column(nullable = false)
     private LocalDate enrolledAt;
 
     @Enumerated(EnumType.STRING)
