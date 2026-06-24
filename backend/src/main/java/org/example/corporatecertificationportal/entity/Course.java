@@ -1,16 +1,18 @@
 package org.example.corporatecertificationportal.entity;
 
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 import java.math.BigDecimal;
 import java.util.List;
 
+@Builder
 @Getter
 @Setter
 @Entity
 @Table(name = "courses")
+@NoArgsConstructor
+@AllArgsConstructor
 public class Course {
 
     @Id

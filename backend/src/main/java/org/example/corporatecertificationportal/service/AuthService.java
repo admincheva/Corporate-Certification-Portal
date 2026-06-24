@@ -7,6 +7,7 @@ import lombok.RequiredArgsConstructor;
 import org.example.corporatecertificationportal.dto.LoginDTO;
 import org.example.corporatecertificationportal.dto.RegisterDTO;
 import org.example.corporatecertificationportal.entity.User;
+import org.example.corporatecertificationportal.enums.Role;
 import org.example.corporatecertificationportal.repository.UserRepository;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -28,9 +29,8 @@ public class AuthService {
 
         User user = User.builder()
                 .username(request.getUsername())
-                .password(
-                        passwordEncoder.encode(request.getPassword())
-                )
+                .password(passwordEncoder.encode(request.getPassword()))
+                .role(Role.EMPLOYEE)
                 .build();
 
         userRepository.save(user);
@@ -40,27 +40,20 @@ public class AuthService {
 
     public User login(LoginDTO request) {
 
-        User user = userRepository
-                .findByUsername(
-                        request.getUsername()
-                )
+        User user = userRepository.findByUsername(request.getUsername())
                 .orElseThrow(
                         () -> new RuntimeException(
                                 "User not found"
                         )
                 );
 
-        boolean validPassword =
-                passwordEncoder.matches(
+        boolean validPassword = passwordEncoder.matches(
                         request.getPassword(),
                         user.getPassword()
                 );
 
         if (!validPassword) {
-
-            throw new RuntimeException(
-                    "Invalid username or password"
-            );
+            throw new RuntimeException("Invalid username or password");
         }
 
         return user;

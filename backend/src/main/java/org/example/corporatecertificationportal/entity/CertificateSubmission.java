@@ -1,16 +1,18 @@
 package org.example.corporatecertificationportal.entity;
 
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 import org.example.corporatecertificationportal.enums.SubmissionStatus;
 
 import java.math.BigDecimal;
 
+@Builder
 @Getter
 @Setter
 @Entity
 @Table(name = "cert-submission")
+@NoArgsConstructor
+@AllArgsConstructor
 public class CertificateSubmission {
 
     @Id

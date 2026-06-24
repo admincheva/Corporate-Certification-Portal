@@ -1,16 +1,18 @@
 package org.example.corporatecertificationportal.entity;
 
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 import org.example.corporatecertificationportal.enums.EnrollmentStatus;
 
 import java.time.LocalDate;
 
+@Builder
 @Getter
 @Setter
 @Entity
 @Table(name = "enrollments")
+@NoArgsConstructor
+@AllArgsConstructor
 public class Enrollment {
 
     @Id
