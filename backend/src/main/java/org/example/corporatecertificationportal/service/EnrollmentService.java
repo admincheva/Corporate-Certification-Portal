@@ -13,7 +13,6 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -66,5 +65,10 @@ public class EnrollmentService {
 
         enrollment.setStatus(EnrollmentStatus.CANCELLED);
         enrollmentRepository.save(enrollment);
+
+    }
+
+    public void delete(Long id){
+        enrollmentRepository.deleteById(id);
     }
 }

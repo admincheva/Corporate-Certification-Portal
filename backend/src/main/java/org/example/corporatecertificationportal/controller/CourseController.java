@@ -11,17 +11,35 @@ import java.util.List;
 @RestController
 @RequestMapping("/courses")
 @RequiredArgsConstructor
+@CrossOrigin(origins = "http://localhost:4200")
 public class CourseController {
 
-    private final CourseService service;
-
-    @PostMapping
-    public Course create(@RequestBody CourseDTO course) {
-        return service.create(course);
-    }
+    private final CourseService courseService;
 
     @GetMapping
     public List<Course> getAll() {
-        return service.getAll();
+        return courseService.getAll();
     }
+
+    @GetMapping("/{id}")
+    public Course getById(@PathVariable Long id) {
+        return courseService.getById(id);
+    }
+
+    @PostMapping
+    public Course create(@RequestBody CourseDTO courseDTO) {
+        return courseService.create(courseDTO);
+    }
+
+    @PutMapping("/{id}")
+    public Course update(@PathVariable Long id,
+                         @RequestBody CourseDTO courseDTO) {
+        return courseService.update(id, courseDTO);
+    }
+
+    @DeleteMapping("/{id}")
+    public void delete(@PathVariable Long id) {
+        courseService.delete(id);
+    }
+
 }

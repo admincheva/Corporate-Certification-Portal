@@ -41,6 +41,7 @@ public class CourseService {
     public Course update(Long id, CourseDTO courseDTO){
         Course course = getById(id);
         course = Course.builder()
+                .id(course.getId())
                 .title(courseDTO.getTitle())
                 .price(courseDTO.getPrice())
                 .category(courseDTO.getCategory())
