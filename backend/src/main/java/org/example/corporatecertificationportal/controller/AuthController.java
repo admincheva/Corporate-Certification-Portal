@@ -20,23 +20,14 @@ public class AuthController {
     private final AuthService authService;
 
     @PostMapping("/register")
-    public ResponseEntity<String> register(
-            @Valid
-            @RequestBody
-            RegisterDTO request
-    ) {
-
-        return ResponseEntity.ok(
-                authService.register(request)
-        );
+    public ResponseEntity<String> register(@Valid @RequestBody RegisterDTO request) {
+        return ResponseEntity.ok(authService.register(request));
     }
 
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody LoginDTO request) {
-
         User user = authService.login(request);
-
-        return ResponseEntity.ok(Map.of("username", user.getUsername())
-        );
+        return ResponseEntity.ok(Map.of("username", user.getUsername(),
+                "role", user.getRole()));
     }
 }
