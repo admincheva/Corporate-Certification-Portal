@@ -1,6 +1,7 @@
 package org.example.corporatecertificationportal.service;
 
 import org.example.corporatecertificationportal.dto.CourseDTO;
+import org.example.corporatecertificationportal.exception.CourseNotFoundException;
 import org.springframework.stereotype.Service;
 
 import lombok.RequiredArgsConstructor;
@@ -30,8 +31,7 @@ public class CourseService {
     }
 
     public Course getById(Long id){
-        return repository.findById(id).orElseThrow(
-                () -> new RuntimeException("Course not found"));
+        return repository.findById(id).orElseThrow(CourseNotFoundException::new);
     }
 
     public void delete(Long id) {

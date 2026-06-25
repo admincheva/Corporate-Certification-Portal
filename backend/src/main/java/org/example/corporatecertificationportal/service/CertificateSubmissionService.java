@@ -4,6 +4,9 @@ import org.example.corporatecertificationportal.dto.CertificateSubmissionDTO;
 import org.example.corporatecertificationportal.entity.Enrollment;
 import org.example.corporatecertificationportal.entity.User;
 import org.example.corporatecertificationportal.enums.SubmissionStatus;
+import org.example.corporatecertificationportal.exception.CertificateNotFoundException;
+import org.example.corporatecertificationportal.exception.EnrollmentNotFoundException;
+import org.example.corporatecertificationportal.exception.UserNotFoundException;
 import org.example.corporatecertificationportal.repository.EnrollmentRepository;
 import org.example.corporatecertificationportal.repository.UserRepository;
 import org.springframework.stereotype.Service;
@@ -24,10 +27,10 @@ public class CertificateSubmissionService {
     public CertificateSubmission create(CertificateSubmissionDTO dto) {
 
         User user = userRepository.findByUsername(dto.getUsername())
-                .orElseThrow(() -> new RuntimeException("User not found"));
+                .orElseThrow(UserNotFoundException::new);
 
         Enrollment enrollment = enrollmentRepository.findById(dto.getEnrollmentId())
-                .orElseThrow(() -> new RuntimeException("Enrollment not found"));
+                .orElseThrow(EnrollmentNotFoundException::new);
 
         CertificateSubmission submission = CertificateSubmission.builder()
                 .certificateNumber(dto.getCertificateNumber())
@@ -56,7 +59,7 @@ public class CertificateSubmissionService {
 
     public CertificateSubmission getById(Long id) {
         return certificateSubmissionRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Submission not found"));
+                .orElseThrow(CertificateNotFoundException::new);
     }
 
     public void rejectSubmission(Long id){

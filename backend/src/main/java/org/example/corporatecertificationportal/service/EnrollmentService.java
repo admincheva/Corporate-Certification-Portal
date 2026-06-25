@@ -6,6 +6,9 @@ import org.example.corporatecertificationportal.entity.Course;
 import org.example.corporatecertificationportal.entity.Enrollment;
 import org.example.corporatecertificationportal.entity.User;
 import org.example.corporatecertificationportal.enums.EnrollmentStatus;
+import org.example.corporatecertificationportal.exception.CourseNotFoundException;
+import org.example.corporatecertificationportal.exception.EnrollmentNotFoundException;
+import org.example.corporatecertificationportal.exception.UserNotFoundException;
 import org.example.corporatecertificationportal.repository.CourseRepository;
 import org.example.corporatecertificationportal.repository.EnrollmentRepository;
 import org.example.corporatecertificationportal.repository.UserRepository;
@@ -36,10 +39,10 @@ public class EnrollmentService {
 
     public Enrollment create(EnrollmentDTO enrollmentDTO){
         User user = userRepository.findByUsername(enrollmentDTO.getUsername())
-                .orElseThrow(() -> new RuntimeException("User not found"));
+                .orElseThrow(UserNotFoundException::new);
 
         Course course = courseRepository.findById(enrollmentDTO.getCourseId())
-                .orElseThrow(() -> new RuntimeException("Course not found"));
+                .orElseThrow(CourseNotFoundException::new);
 
         Enrollment enrollment = Enrollment.builder()
                 .user(user)
@@ -53,7 +56,7 @@ public class EnrollmentService {
 
     public void complete(Long id){
         Enrollment enrollment = enrollmentRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Enrollment course not found"));
+                .orElseThrow(EnrollmentNotFoundException::new);
 
         enrollment.setStatus(EnrollmentStatus.COMPLETED);
         enrollmentRepository.save(enrollment);
@@ -61,7 +64,7 @@ public class EnrollmentService {
 
     public void cancel(Long id) {
         Enrollment enrollment = enrollmentRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Enrollment course not found"));
+                .orElseThrow(EnrollmentNotFoundException::new);
 
         enrollment.setStatus(EnrollmentStatus.CANCELLED);
         enrollmentRepository.save(enrollment);
