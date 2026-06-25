@@ -11,6 +11,7 @@ import org.example.corporatecertificationportal.enums.Role;
 import org.example.corporatecertificationportal.exception.InvalidCredentialsException;
 import org.example.corporatecertificationportal.exception.UserAlreadyExistsException;
 import org.example.corporatecertificationportal.exception.UserNotFoundException;
+import org.example.corporatecertificationportal.mapper.UserMapper;
 import org.example.corporatecertificationportal.repository.UserRepository;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -23,6 +24,7 @@ public class AuthService {
 
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
+    private final UserMapper userMapper;
 
     public User register(@Valid RegisterDTO request) {
 
@@ -34,16 +36,10 @@ public class AuthService {
             throw new UserAlreadyExistsException();
         }
 
-        User user = User.builder()
-                .username(request.getUsername())
-                .email(request.getEmail())
-                .password(passwordEncoder.encode(request.getPassword()))
-                .role(Role.EMPLOYEE)
-                .build();
+        User user =userMapper.toEntity(request);
+        user.setRole(Role.EMPLOYEE);
 
-        userRepository.save(user);
-
-        return user;
+        return userRepository.save(user);
     }
 
     public User login(LoginDTO request) {

@@ -1,12 +1,9 @@
 package org.example.corporatecertificationportal.service;
 
 import org.example.corporatecertificationportal.dto.CertificateSubmissionDTO;
-import org.example.corporatecertificationportal.entity.Enrollment;
-import org.example.corporatecertificationportal.entity.User;
 import org.example.corporatecertificationportal.enums.SubmissionStatus;
 import org.example.corporatecertificationportal.exception.CertificateNotFoundException;
-import org.example.corporatecertificationportal.exception.EnrollmentNotFoundException;
-import org.example.corporatecertificationportal.exception.UserNotFoundException;
+import org.example.corporatecertificationportal.mapper.CertificateSubmissionMapper;
 import org.example.corporatecertificationportal.repository.EnrollmentRepository;
 import org.example.corporatecertificationportal.repository.UserRepository;
 import org.springframework.stereotype.Service;
@@ -21,40 +18,25 @@ import java.util.List;
 public class CertificateSubmissionService {
 
     private final CertificateSubmissionRepository certificateSubmissionRepository;
-    private final UserRepository userRepository;
-    private final EnrollmentRepository enrollmentRepository;
+    private final CertificateSubmissionMapper certificateSubmissionMapper;
 
     public CertificateSubmission create(CertificateSubmissionDTO dto) {
 
-        User user = userRepository.findByUsername(dto.getUsername())
-                .orElseThrow(UserNotFoundException::new);
-
-        Enrollment enrollment = enrollmentRepository.findById(dto.getEnrollmentId())
-                .orElseThrow(EnrollmentNotFoundException::new);
-
-        CertificateSubmission submission = CertificateSubmission.builder()
-                .certificateNumber(dto.getCertificateNumber())
-                .status(SubmissionStatus.PENDING)
-                .invoiceFileUrl(dto.getInvoiceFileUrl())
-                .certificateFileUrl(dto.getCertificateFileUrl())
-                .user(user)
-                .enrollment(enrollment)
-                .amountPaid(dto.getAmountPaid())
-                .build();
-
+        CertificateSubmission submission = certificateSubmissionMapper.toEntity(dto);
         return certificateSubmissionRepository.save(submission);
 
     }
 
     public List<CertificateSubmissionDTO> getMySubmissions(String username){
-        List<CertificateSubmission> submissions = certificateSubmissionRepository.findByUserUsername(username);
-        return submissions.stream()
-                .map(this::toDto)
-                .toList();
+        return certificateSubmissionMapper
+                .toDTOList(certificateSubmissionRepository
+                        .findByUserUsername(username));
     }
 
-    public List<CertificateSubmission> getAll() {
-        return certificateSubmissionRepository.findAll();
+    public List<CertificateSubmissionDTO> getAll() {
+
+        return certificateSubmissionMapper
+                .toDTOList(certificateSubmissionRepository.findAll());
     }
 
     public CertificateSubmission getById(Long id) {
@@ -76,19 +58,5 @@ public class CertificateSubmissionService {
 
     public void delete(Long id) {
         certificateSubmissionRepository.deleteById(id);
-    }
-
-    private CertificateSubmissionDTO toDto(CertificateSubmission certificateSubmission){
-        return CertificateSubmissionDTO.builder()
-                    .id(certificateSubmission.getId())
-                    .username(certificateSubmission.getUser().getUsername())
-                    .enrollmentId(certificateSubmission.getEnrollment().getId())
-                    .courseTitle(certificateSubmission.getEnrollment().getCourse().getTitle())
-                    .certificateFileUrl(certificateSubmission.getCertificateFileUrl())
-                    .invoiceFileUrl(certificateSubmission.getInvoiceFileUrl())
-                    .certificateNumber(certificateSubmission.getCertificateNumber())
-                    .amountPaid(certificateSubmission.getAmountPaid())
-                    .status(certificateSubmission.getStatus())
-                    .build();
     }
 }

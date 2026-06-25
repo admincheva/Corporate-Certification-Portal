@@ -19,13 +19,13 @@ public class CourseController {
 
     @PreAuthorize("isAuthenticated()")
     @GetMapping
-    public List<Course> getAll() {
+    public List<CourseDTO> getAll() {
         return courseService.getAll();
     }
 
     @PreAuthorize("hasAnyRole('ADMIN','EMPLOYEE')")
     @GetMapping("/{id}")
-    public Course getById(@PathVariable Long id) {
+    public CourseDTO getById(@PathVariable Long id) {
         return courseService.getById(id);
     }
 

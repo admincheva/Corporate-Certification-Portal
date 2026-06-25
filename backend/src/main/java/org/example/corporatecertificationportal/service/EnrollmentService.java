@@ -9,6 +9,7 @@ import org.example.corporatecertificationportal.enums.EnrollmentStatus;
 import org.example.corporatecertificationportal.exception.CourseNotFoundException;
 import org.example.corporatecertificationportal.exception.EnrollmentNotFoundException;
 import org.example.corporatecertificationportal.exception.UserNotFoundException;
+import org.example.corporatecertificationportal.mapper.EnrollmentMapper;
 import org.example.corporatecertificationportal.repository.CourseRepository;
 import org.example.corporatecertificationportal.repository.EnrollmentRepository;
 import org.example.corporatecertificationportal.repository.UserRepository;
@@ -24,33 +25,15 @@ public class EnrollmentService {
     private final EnrollmentRepository enrollmentRepository;
     private final UserRepository userRepository;
     private final CourseRepository courseRepository;
+    private final EnrollmentMapper enrollmentMapper;
 
     public List<EnrollmentDTO> getMyLearning(String username) {
-        return enrollmentRepository.findByUserUsername(username)
-                .stream()
-                .map(enrollment -> EnrollmentDTO.builder()
-                                .courseTitle(enrollment.getCourse().getTitle())
-                                .provider(enrollment.getCourse().getProvider())
-                                .enrolledAt(enrollment.getEnrolledAt())
-                                .status(enrollment.getStatus().name())
-                                .build())
-                .toList();
+        return enrollmentMapper
+                .toDTOList(enrollmentRepository.findByUserUsername(username));
     }
 
     public Enrollment create(EnrollmentDTO enrollmentDTO){
-        User user = userRepository.findByUsername(enrollmentDTO.getUsername())
-                .orElseThrow(UserNotFoundException::new);
-
-        Course course = courseRepository.findById(enrollmentDTO.getCourseId())
-                .orElseThrow(CourseNotFoundException::new);
-
-        Enrollment enrollment = Enrollment.builder()
-                .user(user)
-                .course(course)
-                .enrolledAt(LocalDate.now())
-                .status(EnrollmentStatus.ENROLLED)
-                .build();
-
+        Enrollment enrollment = enrollmentMapper.toEntity(enrollmentDTO);
         return enrollmentRepository.save(enrollment);
     }
 

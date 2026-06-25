@@ -23,7 +23,7 @@ public class CertificateSubmissionController {
         return submissionService.create(dto);
     }
 
-    @PreAuthorize("hasAnyRole('ADMIN','EMPLOYEE')")
+    @PreAuthorize("isAuthenticated()")
     @GetMapping("/{username}")
     public List<CertificateSubmissionDTO> getMySubmissions(@PathVariable String username) {
         return submissionService.getMySubmissions(username);
@@ -31,7 +31,7 @@ public class CertificateSubmissionController {
 
     @PreAuthorize("hasRole('ADMIN')")
     @GetMapping
-    public List<CertificateSubmission> getAll() {
+    public List<CertificateSubmissionDTO> getAll() {
         return submissionService.getAll();
     }
 

@@ -2,6 +2,7 @@ package org.example.corporatecertificationportal.service;
 
 import org.example.corporatecertificationportal.dto.CourseDTO;
 import org.example.corporatecertificationportal.exception.CourseNotFoundException;
+import org.example.corporatecertificationportal.mapper.CourseMapper;
 import org.springframework.stereotype.Service;
 
 import lombok.RequiredArgsConstructor;
@@ -15,23 +16,19 @@ import java.util.List;
 public class CourseService {
 
     private final CourseRepository repository;
+    private final CourseMapper courseMapper;
 
     public Course create(CourseDTO courseDTO) {
 
-        Course course = Course.builder()
-                .title(courseDTO.getTitle())
-                .price(courseDTO.getPrice())
-                .category(courseDTO.getCategory())
-                .externalUrl(courseDTO.getExternalUrl())
-                .provider(courseDTO.getProvider())
-                .refundable(courseDTO.isRefundable())
-                .build();
-
+        Course course = courseMapper.toEntity(courseDTO);
         return repository.save(course);
     }
 
-    public Course getById(Long id){
-        return repository.findById(id).orElseThrow(CourseNotFoundException::new);
+    public CourseDTO getById(Long id){
+        Course course = repository.findById(id)
+                .orElseThrow(CourseNotFoundException::new);
+
+        return courseMapper.toDTO(course);
     }
 
     public void delete(Long id) {
@@ -39,21 +36,20 @@ public class CourseService {
     }
 
     public Course update(Long id, CourseDTO courseDTO){
-        Course course = getById(id);
-        course = Course.builder()
-                .id(course.getId())
-                .title(courseDTO.getTitle())
-                .price(courseDTO.getPrice())
-                .category(courseDTO.getCategory())
-                .externalUrl(courseDTO.getExternalUrl())
-                .provider(courseDTO.getProvider())
-                .refundable(courseDTO.isRefundable())
-                .build();
+        Course course = repository.findById(id)
+                .orElseThrow(CourseNotFoundException::new);
+
+        course.setTitle(courseDTO.getTitle());
+        course.setPrice(courseDTO.getPrice());
+        course.setCategory(courseDTO.getCategory());
+        course.setExternalUrl(courseDTO.getExternalUrl());
+        course.setProvider(courseDTO.getProvider());
+        course.setRefundable(courseDTO.isRefundable());
 
         return repository.save(course);
     }
 
-    public List<Course> getAll() {
-        return repository.findAll();
+    public List<CourseDTO> getAll() {
+        return courseMapper.toDTOList(repository.findAll());
     }
 }
