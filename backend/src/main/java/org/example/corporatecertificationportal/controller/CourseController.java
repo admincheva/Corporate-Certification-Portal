@@ -2,6 +2,7 @@ package org.example.corporatecertificationportal.controller;
 
 import lombok.RequiredArgsConstructor;
 import org.example.corporatecertificationportal.dto.CourseDTO;
+import org.example.corporatecertificationportal.dto.CourseFilterDTO;
 import org.example.corporatecertificationportal.entity.Course;
 import org.example.corporatecertificationportal.service.CourseService;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -46,6 +47,13 @@ public class CourseController {
     @DeleteMapping("/{id}")
     public void delete(@PathVariable Long id) {
         courseService.delete(id);
+    }
+
+    @GetMapping("/filter")
+    public List<CourseDTO> filterCourses(CourseFilterDTO filter) {
+
+        return courseService.filterCourses(filter);
+
     }
 
 }
