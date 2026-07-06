@@ -2,9 +2,9 @@ package org.example.corporatecertificationportal.controller;
 
 import lombok.RequiredArgsConstructor;
 import org.example.corporatecertificationportal.dto.EnrollmentDTO;
-import org.example.corporatecertificationportal.entity.Enrollment;
 import org.example.corporatecertificationportal.service.EnrollmentService;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -12,7 +12,6 @@ import java.util.List;
 @RestController
 @RequestMapping("/enrollments")
 @RequiredArgsConstructor
-@CrossOrigin(origins = "http://localhost:4200")
 public class EnrollmentController {
 
     private final EnrollmentService enrollmentService;
@@ -26,8 +25,11 @@ public class EnrollmentController {
 
     @PreAuthorize("hasAnyRole('ADMIN','EMPLOYEE')")
     @PostMapping
-    public Enrollment create(@RequestBody EnrollmentDTO enrollmentDTO) {
-        return enrollmentService.create(enrollmentDTO);
+    public EnrollmentDTO create(
+            @RequestBody EnrollmentDTO enrollmentDTO,
+            Authentication authentication
+    ) {
+        return enrollmentService.create(enrollmentDTO, authentication.getName());
     }
 
     @PreAuthorize("hasAnyRole('ADMIN','EMPLOYEE')")

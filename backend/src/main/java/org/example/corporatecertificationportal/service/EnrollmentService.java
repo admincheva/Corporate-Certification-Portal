@@ -7,9 +7,9 @@ import org.example.corporatecertificationportal.entity.Enrollment;
 import org.example.corporatecertificationportal.entity.User;
 import org.example.corporatecertificationportal.enums.EnrollmentStatus;
 import org.example.corporatecertificationportal.exception.CourseNotFoundException;
+import org.example.corporatecertificationportal.exception.EnrollmentAlreadyExistsException;
 import org.example.corporatecertificationportal.exception.EnrollmentNotFoundException;
 import org.example.corporatecertificationportal.exception.UserNotFoundException;
-import org.example.corporatecertificationportal.mapper.EnrollmentMapper;
 import org.example.corporatecertificationportal.repository.CourseRepository;
 import org.example.corporatecertificationportal.repository.EnrollmentRepository;
 import org.example.corporatecertificationportal.repository.UserRepository;
@@ -25,16 +25,40 @@ public class EnrollmentService {
     private final EnrollmentRepository enrollmentRepository;
     private final UserRepository userRepository;
     private final CourseRepository courseRepository;
-    private final EnrollmentMapper enrollmentMapper;
 
     public List<EnrollmentDTO> getMyLearning(String username) {
-        return enrollmentMapper
-                .toDTOList(enrollmentRepository.findByUserUsername(username));
+        return enrollmentRepository
+                .findByUserUsername(username)
+                .stream()
+                .map(this::toDto)
+                .toList();
     }
 
-    public Enrollment create(EnrollmentDTO enrollmentDTO){
-        Enrollment enrollment = enrollmentMapper.toEntity(enrollmentDTO);
-        return enrollmentRepository.save(enrollment);
+    public EnrollmentDTO create(EnrollmentDTO enrollmentDTO, String username) {
+        if (enrollmentDTO.getCourseId() == null) {
+            throw new CourseNotFoundException();
+        }
+
+        if (enrollmentRepository.existsByUserUsernameAndCourseId(username, enrollmentDTO.getCourseId())) {
+            throw new EnrollmentAlreadyExistsException();
+        }
+
+        User user = userRepository
+                .findByUsername(username)
+                .orElseThrow(UserNotFoundException::new);
+
+        Course course = courseRepository
+                .findById(enrollmentDTO.getCourseId())
+                .orElseThrow(CourseNotFoundException::new);
+
+        Enrollment enrollment = Enrollment.builder()
+                .user(user)
+                .course(course)
+                .enrolledAt(LocalDate.now())
+                .status(EnrollmentStatus.ENROLLED)
+                .build();
+
+        return toDto(enrollmentRepository.save(enrollment));
     }
 
     public void complete(Long id){
@@ -56,5 +80,17 @@ public class EnrollmentService {
 
     public void delete(Long id){
         enrollmentRepository.deleteById(id);
+    }
+
+    private EnrollmentDTO toDto(Enrollment enrollment) {
+        return EnrollmentDTO.builder()
+                .id(enrollment.getId())
+                .username(enrollment.getUser().getUsername())
+                .courseId(enrollment.getCourse().getId())
+                .courseTitle(enrollment.getCourse().getTitle())
+                .provider(enrollment.getCourse().getProvider())
+                .enrolledAt(enrollment.getEnrolledAt())
+                .status(enrollment.getStatus().name())
+                .build();
     }
 }
