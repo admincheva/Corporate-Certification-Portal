@@ -49,8 +49,9 @@ public class CourseController {
         courseService.delete(id);
     }
 
+    @PreAuthorize("isAuthenticated()")
     @GetMapping("/filter")
-    public List<CourseDTO> filterCourses(CourseFilterDTO filter) {
+    public List<CourseDTO> filterCourses(@ModelAttribute CourseFilterDTO filter) {
 
         return courseService.filterCourses(filter);
 

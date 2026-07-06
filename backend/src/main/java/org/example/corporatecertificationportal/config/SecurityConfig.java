@@ -1,56 +1,119 @@
 package org.example.corporatecertificationportal.config;
 
-import org.example.corporatecertificationportal.entity.User;
-import org.example.corporatecertificationportal.repository.UserRepository;
+import lombok.RequiredArgsConstructor;
+import org.example.corporatecertificationportal.security.CustomUserDetailsService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.Customizer;
-import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.web.cors.*;
+
+import java.util.List;
 
 @Configuration
-@EnableMethodSecurity
+@RequiredArgsConstructor
 public class SecurityConfig {
 
-    @Bean
-    public UserDetailsService userDetailsService(UserRepository repository) {
-        return username -> {
-            User user = repository.findByUsername(username)
-                    .orElseThrow(() ->
-                            new UsernameNotFoundException("User not found"));
+    private final CustomUserDetailsService userDetailsService;
+    private final PasswordEncoder passwordEncoder;
 
-            return org.springframework.security.core.userdetails.User
-                    .withUsername(user.getUsername())
-                    .password(user.getPassword())
-                    .roles(user.getRole().name())
-                    .build();
-        };
+    @Bean
+    DaoAuthenticationProvider authenticationProvider() {
+
+        DaoAuthenticationProvider provider =
+                new DaoAuthenticationProvider();
+
+        provider.setUserDetailsService(userDetailsService);
+        provider.setPasswordEncoder(passwordEncoder);
+
+        return provider;
     }
 
     @Bean
-    public SecurityFilterChain securityFilterChain(
-            HttpSecurity http
-    ) throws Exception {
+    SecurityFilterChain securityFilterChain(HttpSecurity http)
+            throws Exception {
 
         http
+                .cors(Customizer.withDefaults())
+
                 .csrf(csrf -> csrf.disable())
+
+                .authenticationProvider(authenticationProvider())
 
                 .authorizeHttpRequests(auth -> auth
 
-                        .requestMatchers("/auth/**")
-                        .permitAll()
+                        .requestMatchers(
+                                "/login",
+                                "/auth/register"
+                        ).permitAll()
 
                         .anyRequest()
+
                         .authenticated()
+
                 )
 
-                .httpBasic(Customizer.withDefaults())
+                .formLogin(login -> login
 
-                .formLogin(form -> form.disable());
+                        .loginProcessingUrl("/login")
+
+                        .successHandler((req, res, auth) -> {
+
+                            res.setStatus(200);
+
+                        })
+
+                        .failureHandler((req, res, ex) -> {
+
+                            res.sendError(401);
+
+                        })
+
+                )
+
+                .logout(logout -> logout
+
+                        .logoutUrl("/auth/logout")
+
+                        .logoutSuccessHandler((req, res, auth) -> {
+
+                            res.setStatus(200);
+
+                        })
+
+                );
 
         return http.build();
     }
+
+    @Bean
+    CorsConfigurationSource corsConfigurationSource() {
+
+        CorsConfiguration config =
+                new CorsConfiguration();
+
+        config.setAllowedOrigins(
+                List.of("http://localhost:4200"));
+
+        config.setAllowedMethods(
+                List.of("*"));
+
+        config.setAllowedHeaders(
+                List.of("*"));
+
+        config.setAllowCredentials(true);
+
+        UrlBasedCorsConfigurationSource source =
+                new UrlBasedCorsConfigurationSource();
+
+        source.registerCorsConfiguration(
+                "/**",
+                config);
+
+        return source;
+    }
+
 }
