@@ -5,9 +5,11 @@
   <div class="card p-3 mb-3"
        *ngFor="let enrollment of enrollments">
 
-    <h5>{{enrollment.course.title}}</h5>
+    <h5>{{enrollment.courseTitle}}</h5>
 
-    <p>{{enrollment.user.fullName}}</p>
+    <p>{{enrollment.username}}</p>
+
+    <p><strong>Provider:</strong> {{enrollment.provider}}</p>
 
     <p>Status: {{enrollment.status}}</p>
 
