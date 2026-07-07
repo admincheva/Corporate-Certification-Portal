@@ -1,5 +1,6 @@
 package org.example.corporatecertificationportal.controller;
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.example.corporatecertificationportal.dto.EnrollmentDTO;
 import org.example.corporatecertificationportal.service.EnrollmentService;
@@ -16,7 +17,6 @@ public class EnrollmentController {
 
     private final EnrollmentService enrollmentService;
 
-
     @PreAuthorize("isAuthenticated()")
     @GetMapping("/{username}")
     public List<EnrollmentDTO> getMyLearning(@PathVariable String username) {
@@ -26,7 +26,7 @@ public class EnrollmentController {
     @PreAuthorize("hasAnyRole('ADMIN','EMPLOYEE')")
     @PostMapping
     public EnrollmentDTO create(
-            @RequestBody EnrollmentDTO enrollmentDTO,
+            @Valid @RequestBody EnrollmentDTO enrollmentDTO,
             Authentication authentication
     ) {
         return enrollmentService.create(enrollmentDTO, authentication.getName());

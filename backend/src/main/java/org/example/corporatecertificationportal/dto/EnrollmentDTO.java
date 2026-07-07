@@ -1,5 +1,6 @@
 package org.example.corporatecertificationportal.dto;
 
+import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
 import java.time.LocalDate;
@@ -12,7 +13,10 @@ import java.time.LocalDate;
 public class EnrollmentDTO {
     private Long id;
     private String username;
+
+    @NotNull(message = "courseId must not be null")
     private Long courseId;
+
     private String courseTitle;
     private String provider;
     private LocalDate enrolledAt;

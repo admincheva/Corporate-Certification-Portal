@@ -1,6 +1,7 @@
 package org.example.corporatecertificationportal.service;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.example.corporatecertificationportal.dto.EnrollmentDTO;
 import org.example.corporatecertificationportal.entity.Course;
 import org.example.corporatecertificationportal.entity.Enrollment;
@@ -14,10 +15,12 @@ import org.example.corporatecertificationportal.repository.CourseRepository;
 import org.example.corporatecertificationportal.repository.EnrollmentRepository;
 import org.example.corporatecertificationportal.repository.UserRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.util.List;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class EnrollmentService {
@@ -26,7 +29,9 @@ public class EnrollmentService {
     private final UserRepository userRepository;
     private final CourseRepository courseRepository;
 
+    @Transactional(readOnly = true)
     public List<EnrollmentDTO> getMyLearning(String username) {
+        log.info("Fetching enrollments for user: {}", username);
         return enrollmentRepository
                 .findByUserUsername(username)
                 .stream()
@@ -34,22 +39,35 @@ public class EnrollmentService {
                 .toList();
     }
 
+    @Transactional
     public EnrollmentDTO create(EnrollmentDTO enrollmentDTO, String username) {
-        if (enrollmentDTO.getCourseId() == null) {
-            throw new CourseNotFoundException();
+        Long courseId = enrollmentDTO.getCourseId();
+
+        if (courseId == null) {
+            log.warn("Enrollment request from user '{}' is missing courseId", username);
+            throw new IllegalArgumentException("courseId must not be null");
         }
 
-        if (enrollmentRepository.existsByUserUsernameAndCourseId(username, enrollmentDTO.getCourseId())) {
+        log.info("User '{}' requesting enrollment in course id={}", username, courseId);
+
+        if (enrollmentRepository.existsByUserUsernameAndCourseId(username, courseId)) {
+            log.warn("Duplicate enrollment attempt: user='{}', courseId={}", username, courseId);
             throw new EnrollmentAlreadyExistsException();
         }
 
         User user = userRepository
                 .findByUsername(username)
-                .orElseThrow(UserNotFoundException::new);
+                .orElseThrow(() -> {
+                    log.error("User not found: '{}'", username);
+                    return new UserNotFoundException();
+                });
 
         Course course = courseRepository
-                .findById(enrollmentDTO.getCourseId())
-                .orElseThrow(CourseNotFoundException::new);
+                .findById(courseId)
+                .orElseThrow(() -> {
+                    log.error("Course not found: id={}", courseId);
+                    return new CourseNotFoundException();
+                });
 
         Enrollment enrollment = Enrollment.builder()
                 .user(user)
@@ -58,10 +76,14 @@ public class EnrollmentService {
                 .status(EnrollmentStatus.ENROLLED)
                 .build();
 
-        return toDto(enrollmentRepository.save(enrollment));
+        Enrollment saved = enrollmentRepository.save(enrollment);
+        log.info("Enrollment created: user='{}', courseId={}, enrollmentId={}", username, courseId, saved.getId());
+        return toDto(saved);
     }
 
-    public void complete(Long id){
+    @Transactional
+    public void complete(Long id) {
+        log.info("Completing enrollment id={}", id);
         Enrollment enrollment = enrollmentRepository.findById(id)
                 .orElseThrow(EnrollmentNotFoundException::new);
 
@@ -69,16 +91,19 @@ public class EnrollmentService {
         enrollmentRepository.save(enrollment);
     }
 
+    @Transactional
     public void cancel(Long id) {
+        log.info("Cancelling enrollment id={}", id);
         Enrollment enrollment = enrollmentRepository.findById(id)
                 .orElseThrow(EnrollmentNotFoundException::new);
 
         enrollment.setStatus(EnrollmentStatus.CANCELLED);
         enrollmentRepository.save(enrollment);
-
     }
 
-    public void delete(Long id){
+    @Transactional
+    public void delete(Long id) {
+        log.info("Deleting enrollment id={}", id);
         enrollmentRepository.deleteById(id);
     }
 
