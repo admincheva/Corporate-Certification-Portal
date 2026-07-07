@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { CourseService } from '../../services/course';
-import { Course } from '../../models/course.model';
+import { Observable } from 'rxjs';
+import { CourseEnrollmentService, CoursesViewModel } from '../../core/services/course-enrollment.service';
 
 @Component({
   selector: 'app-courses',
@@ -10,18 +10,21 @@ import { Course } from '../../models/course.model';
   templateUrl: './courses.html'
 })
 export class CoursesComponent implements OnInit {
+  readonly vm$: Observable<CoursesViewModel>;
 
-  courses: Course[] = [];
-
-  constructor(private service: CourseService) {}
-
-  ngOnInit(): void {
-    this.loadCourses();
+  constructor(private courseEnrollmentService: CourseEnrollmentService) {
+    this.vm$ = this.courseEnrollmentService.vm$;
   }
 
-  loadCourses() {
-    this.service.getAll().subscribe(data => {
-      this.courses = data;
-    });
+  ngOnInit(): void {
+    this.courseEnrollmentService.loadCourses().subscribe();
+  }
+
+  enroll(courseId: number): void {
+    this.courseEnrollmentService.createEnrollment(courseId).subscribe();
+  }
+
+  clearMessage(): void {
+    this.courseEnrollmentService.clearMessage();
   }
 }

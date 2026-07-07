@@ -1,18 +1,44 @@
 <div class="container mt-5">
-
   <h2 class="mb-4">Courses</h2>
 
-  <div class="card mb-3 p-3"
-       *ngFor="let course of courses">
+  <ng-container *ngIf="vm$ | async as vm">
+    <div
+      *ngIf="vm.message"
+      class="alert mb-3"
+      [ngClass]="{
+        'alert-success': vm.message.kind === 'success',
+        'alert-danger': vm.message.kind === 'error'
+      }"
+    >
+      {{ vm.message.text }}
+      <button
+        type="button"
+        class="btn-close float-end"
+        aria-label="Close"
+        (click)="clearMessage()"
+      ></button>
+    </div>
 
-    <h4>{{course.title}}</h4>
+    <div *ngIf="vm.loading" class="mb-3 text-muted">Loading courses...</div>
 
-    <p>{{course.description}}</p>
+    <div class="card mb-3 p-3" *ngFor="let course of vm.courses">
+      <h4>{{ course.title }}</h4>
 
-    <p><strong>Provider:</strong> {{course.provider}}</p>
+      <p><strong>Provider:</strong> {{ course.provider }}</p>
+      <p><strong>Category:</strong> {{ course.category }}</p>
+      <p><strong>Price:</strong> ${{ course.price }}</p>
 
-    <p><strong>Price:</strong> ${{course.price}}</p>
-
+      <div class="mt-2">
+        <button
+          type="button"
+          class="btn"
+          [ngClass]="course.enrolled ? 'btn-success' : 'btn-primary'"
+          [disabled]="course.enrolled || course.enrolling"
+          (click)="enroll(course.id)"
+        >
+          {{ course.enrolled ? 'Enrolled' : (course.enrolling ? 'Enrolling...' : 'Enroll') }}
+        </button>
+      </div>
+    </div>
+  </ng-container>
   </div>
-
-</div>
