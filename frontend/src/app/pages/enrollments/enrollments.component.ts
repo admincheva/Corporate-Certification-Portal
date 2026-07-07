@@ -1,8 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
-import { EnrollmentService } from '../../services/enrollment.service';
-import { Enrollment } from '../../models/enrollment.model';
+import {
+  EnrollmentService,
+  EnrollmentSummary
+} from '../../services/enrollment.service';
 
 @Component({
   selector: 'app-enrollments',
@@ -13,7 +15,7 @@ import { Enrollment } from '../../models/enrollment.model';
 })
 export class EnrollmentsComponent implements OnInit {
 
-  enrollments: Enrollment[] = [];
+  enrollments: EnrollmentSummary[] = [];
 
   constructor(private service: EnrollmentService) {}
 
@@ -23,10 +25,20 @@ export class EnrollmentsComponent implements OnInit {
   }
 
   loadEnrollments(): void {
+    const user = JSON.parse(
+      localStorage.getItem('user') || '{}'
+    ) as { username?: string };
 
-    this.service.getAll().subscribe({
+    if (!user.username) {
+      this.enrollments = [];
+      return;
+    }
 
-      next: (data: Enrollment[]) => {
+    this.service
+      .getCurrentUserEnrollments(user.username)
+      .subscribe({
+
+      next: (data: EnrollmentSummary[]) => {
 
         this.enrollments = data;
       },

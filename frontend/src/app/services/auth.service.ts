@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import {
-  HttpClient
+  HttpClient,
+  HttpHeaders
 } from '@angular/common/http';
 
 @Injectable({
@@ -9,19 +10,29 @@ import {
 export class AuthService {
 
   private api =
-    'http://localhost:8080/auth';
+    'http://localhost:8080';
 
   constructor(
     private http: HttpClient
   ) {}
 
- login(data: any) {
+ login(data: {
+   username: string;
+   password: string;
+ }) {
+  const formBody = new URLSearchParams();
+  formBody.set('username', data.username);
+  formBody.set('password', data.password);
 
   return this.http.post(
     `${this.api}/login`,
-    data,
+    formBody.toString(),
     {
-      responseType: 'text'
+      headers: new HttpHeaders({
+        'Content-Type': 'application/x-www-form-urlencoded'
+      }),
+      responseType: 'text',
+      withCredentials: true
     }
   );
 }
@@ -29,7 +40,7 @@ export class AuthService {
   register(data: any) {
 
   return this.http.post(
-    `${this.api}/register`,
+    `${this.api}/auth/register`,
     data,
     {
       responseType: 'text'

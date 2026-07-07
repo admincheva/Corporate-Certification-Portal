@@ -13,6 +13,13 @@
 
     <p><strong>Price:</strong> ${{course.price}}</p>
 
+    <button class="btn btn-primary"
+            type="button"
+            [disabled]="!course.id || enrollingCourseIds.has(course.id)"
+            (click)="enroll(course)">
+      {{ enrollingCourseIds.has(course.id || 0) ? 'Enrolling...' : 'Enroll' }}
+    </button>
+
   </div>
 
 </div>

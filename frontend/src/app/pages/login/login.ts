@@ -61,9 +61,14 @@ login() {
 
           console.log(response);
 
+          const username =
+            this.form.get('username')?.value as string;
+
           localStorage.setItem(
             'user',
-            JSON.stringify(response)
+            JSON.stringify({
+              username
+            })
           );
 
           this.router.navigate([
