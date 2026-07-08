@@ -27,4 +27,42 @@ export class SubmissionService {
     );
   }
 
+  create(submission: Submission): Observable<Submission> {
+    return this.http.post<Submission>(
+      this.api,
+      submission,
+      { withCredentials: true }
+    );
+  }
+
+  getById(id: number): Observable<Submission> {
+    return this.http.get<Submission>(
+      `${this.api}/id/${id}`,
+      { withCredentials: true }
+    );
+  }
+
+  delete(id: number): Observable<void> {
+    return this.http.delete<void>(
+      `${this.api}/${id}`,
+      { withCredentials: true }
+    );
+  }
+
+  approveSubmission(id: number): Observable<void> {
+    return this.http.put<void>(
+      `${this.api}/${id}/approve`,
+      {},
+      { withCredentials: true }
+    );
+  }
+
+  rejectSubmission(id: number): Observable<void> {
+    return this.http.put<void>(
+      `${this.api}/${id}/reject`,
+      {},
+      { withCredentials: true }
+    );
+  }
+
 }
