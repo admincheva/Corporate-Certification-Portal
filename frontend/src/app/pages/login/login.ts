@@ -47,46 +47,31 @@ export class LoginComponent {
 
 login() {
 
-  if (this.form.invalid) {
+   if (this.form.invalid) {
 
-    this.form.markAllAsTouched();
-    return;
-  }
+     this.form.markAllAsTouched();
+     return;
+   }
 
-  this.authService
-      .login(this.form.value)
-      .subscribe({
+   this.authService
+       .login(this.form.value)
+       .subscribe({
 
-        next: (response) => {
+         next: (response) => {
 
-          console.log(response);
+           console.log(response);
+           this.router.navigate(['/dashboard']);
 
-          const username =
-            this.form.get('username')?.value as string;
+         },
 
-          localStorage.setItem(
-            'user',
-            JSON.stringify({
-              username
-            })
-          );
+         error: (error) => {
 
-          this.router.navigate([
-            '/dashboard'
-          ]);
+           console.error(error);
 
-        },
+           alert('Invalid username or password');
 
-        error: (error) => {
+         }
 
-          console.error(error);
-
-          alert(
-            'Invalid username or password'
-          );
-
-        }
-
-      });
+       });
 }
 }
