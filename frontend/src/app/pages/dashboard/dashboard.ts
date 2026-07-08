@@ -10,6 +10,8 @@ import {
   DashboardService
 } from '../../services/dashboard.service';
 
+import { AuthService } from '../../services/auth.service';
+
 @Component({
   selector: 'app-dashboard',
   standalone: true,
@@ -23,34 +25,33 @@ implements OnInit {
   dashboard: any;
 
   constructor(
-    private dashboardService:
-    DashboardService
+    private dashboardService: DashboardService,
+    private authService: AuthService
   ) {}
 
   ngOnInit(): void {
 
-   if (typeof window !== 'undefined') {
+    const currentUser = this.authService.getCurrentUser();
 
-  const user = JSON.parse(
-    localStorage.getItem('user') || '{}'
-  );
+    if (currentUser?.username) {
 
-  this.dashboardService
-    .getDashboard(user.username)
-    .subscribe({
+      this.dashboardService
+        .getDashboard(currentUser.username)
+        .subscribe({
 
-      next: (response: any) => {
+          next: (response: any) => {
 
-        this.dashboard = response;
+            this.dashboard = response;
 
-      },
+          },
 
-      error: (error: any) => {
+          error: (error: any) => {
 
-        console.error(error);
+            console.error(error);
 
-      }
+          }
 
-    });
+        });
+    }
+  }
 }
-  }}

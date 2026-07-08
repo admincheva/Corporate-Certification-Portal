@@ -82,9 +82,7 @@ export class RegisterComponent {
 
       next: () => {
 
-        alert(
-          'Registration successful'
-        );
+        alert('Registration successful');
 
         this.router.navigate(['/']);
 
