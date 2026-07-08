@@ -2,6 +2,56 @@
 
   <h2 class="mb-4">Courses</h2>
 
+  <!-- Filter Section -->
+  <div class="card mb-4 p-3">
+    <h5>Filter Courses</h5>
+    
+    <div class="row">
+      <div class="col-md-4">
+        <label class="form-label">Category</label>
+        <select 
+          class="form-select" 
+          [(ngModel)]="filterCategory"
+          (change)="applyFilters()">
+          <option value="">All Categories</option>
+          <option *ngFor="let cat of categories" [value]="cat">
+            {{ cat }}
+          </option>
+        </select>
+      </div>
+
+      <div class="col-md-4">
+        <label class="form-label">Provider</label>
+        <select 
+          class="form-select" 
+          [(ngModel)]="filterProvider"
+          (change)="applyFilters()">
+          <option value="">All Providers</option>
+          <option *ngFor="let prov of providers" [value]="prov">
+            {{ prov }}
+          </option>
+        </select>
+      </div>
+
+      <div class="col-md-4">
+        <label class="form-label">Max Price</label>
+        <input 
+          type="number" 
+          class="form-control" 
+          [(ngModel)]="maxPrice"
+          (change)="applyFilters()"
+          placeholder="No limit">
+      </div>
+    </div>
+
+    <button 
+      class="btn btn-secondary mt-3"
+      (click)="resetFilters()">
+      Reset Filters
+    </button>
+  </div>
+
+  <!-- Courses List -->
   <div class="card mb-3 p-3"
        *ngFor="let course of courses">
 

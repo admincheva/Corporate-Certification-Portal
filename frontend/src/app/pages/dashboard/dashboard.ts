@@ -4,11 +4,13 @@ import {
 } from '@angular/core';
 
 import { CommonModule } from '@angular/common';
-import { RouterLink } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 
 import {
   DashboardService
 } from '../../services/dashboard.service';
+
+import { AuthService } from '../../services/auth.service';
 
 @Component({
   selector: 'app-dashboard',
@@ -24,7 +26,9 @@ implements OnInit {
 
   constructor(
     private dashboardService:
-    DashboardService
+    DashboardService,
+    private authService: AuthService,
+    private router: Router
   ) {}
 
   ngOnInit(): void {
@@ -52,5 +56,18 @@ implements OnInit {
       }
 
     });
+  }
+  }
+
+  logout(): void {
+    this.authService.logout().subscribe({
+      next: () => {
+        this.router.navigate(['/']);
+      },
+      error: (error: any) => {
+        console.error(error);
+        this.router.navigate(['/']);
+      }
+    });
+  }
 }
-  }}

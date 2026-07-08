@@ -47,4 +47,15 @@ export class AuthService {
     }
   );
 }
+
+  logout() {
+    localStorage.removeItem('user');
+    return this.http.post(
+      `${this.api}/logout`,
+      {},
+      {
+        withCredentials: true
+      }
+    );
+  }
 }
