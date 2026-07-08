@@ -4,6 +4,7 @@ import {
 } from '@angular/core';
 
 import { CommonModule } from '@angular/common';
+import { RouterLink } from '@angular/router';
 
 import {
   DashboardService
@@ -12,7 +13,7 @@ import {
 @Component({
   selector: 'app-dashboard',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, RouterLink],
   templateUrl: './dashboard.html',
   styleUrls: ['./dashboard.css']
 })

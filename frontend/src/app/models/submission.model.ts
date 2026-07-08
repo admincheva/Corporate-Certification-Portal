@@ -1,10 +1,8 @@
-import { User } from './user.model';
-import { Enrollment } from './enrollment.model';
-
 export interface Submission {
   id?: number;
-  user: User;
-  enrollment: Enrollment;
+  username: string;
+  enrollmentId: number;
+  courseTitle: string;
   certificateFileUrl: string;
   invoiceFileUrl: string;
   certificateNumber: string;

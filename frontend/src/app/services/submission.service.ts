@@ -9,15 +9,22 @@ import { Submission } from '../models/submission.model';
 })
 export class SubmissionService {
 
-  private apiUrl = 'http://localhost:8080/api/submissions';
+  private api = 'http://localhost:8080/submissions';
 
   constructor(private http: HttpClient) {}
 
   getAll(): Observable<Submission[]> {
-    return this.http.get<Submission[]>(this.apiUrl);
+    return this.http.get<Submission[]>(
+      this.api,
+      { withCredentials: true }
+    );
   }
 
-  create(submission: Submission): Observable<Submission> {
-    return this.http.post<Submission>(this.apiUrl, submission);
+  getMySubmissions(username: string): Observable<Submission[]> {
+    return this.http.get<Submission[]>(
+      `${this.api}/${encodeURIComponent(username)}`,
+      { withCredentials: true }
+    );
   }
+
 }

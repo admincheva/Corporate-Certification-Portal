@@ -22,6 +22,8 @@ export class EnrollmentsComponent implements OnInit {
   }
 
   loadEnrollments() {
+    if (typeof window === 'undefined') return;
+
     const user = JSON.parse(
       localStorage.getItem('user') || '{}'
     ) as { username?: string };

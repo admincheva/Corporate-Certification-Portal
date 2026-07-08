@@ -2,16 +2,23 @@
 
   <h2 class="mb-4">Certificate Submissions</h2>
 
-  <div class="card p-3 mb-3"
-       *ngFor="let submission of submissions">
+  <div
+    class="card p-3 mb-3"
+    *ngFor="let submission of submissions"
+  >
+    <h5>{{ submission.courseTitle }}</h5>
 
-    <h5>{{submission.user.fullName}}</h5>
+    <p><strong>Username:</strong> {{ submission.username }}</p>
 
-    <p>Certificate Number: {{submission.certificateNumber}}</p>
+    <p><strong>Certificate Number:</strong> {{ submission.certificateNumber }}</p>
 
-    <p>Status: {{submission.status}}</p>
+    <p><strong>Certificate File:</strong> {{ submission.certificateFileUrl }}</p>
 
-    <p>Amount Paid: ${{submission.amountPaid}}</p>
+    <p><strong>Invoice File:</strong> {{ submission.invoiceFileUrl }}</p>
+
+    <p><strong>Amount Paid:</strong> {{ submission.amountPaid }}</p>
+
+    <p><strong>Status:</strong> {{ submission.status }}</p>
 
   </div>
 

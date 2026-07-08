@@ -20,8 +20,20 @@ export class SubmissionsComponent implements OnInit {
   }
 
   loadSubmissions() {
-    this.service.getAll().subscribe(data => {
-      this.submissions = data;
+    if (typeof window === 'undefined') return;
+
+    const user = JSON.parse(
+      localStorage.getItem('user') || '{}'
+    ) as { username?: string };
+
+    if (!user.username) {
+      this.submissions = [];
+      return;
+    }
+
+    this.service.getMySubmissions(user.username).subscribe({
+      next: data => { this.submissions = data; },
+      error: err => { console.error(err); }
     });
   }
 }
