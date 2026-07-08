@@ -1,5 +1,5 @@
-import { Component, OnInit } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { Component, OnInit, PLATFORM_ID, Inject } from '@angular/core';
+import { CommonModule, isPlatformBrowser } from '@angular/common';
 
 import {
   EnrollmentService,
@@ -16,15 +16,22 @@ import {
 export class EnrollmentsComponent implements OnInit {
 
   enrollments: EnrollmentSummary[] = [];
+  currentUsername: string = '';
 
-  constructor(private service: EnrollmentService) {}
+  constructor(
+    private service: EnrollmentService,
+    @Inject(PLATFORM_ID) private platformId: Object
+  ) {}
 
   ngOnInit(): void {
-
     this.loadEnrollments();
   }
 
   loadEnrollments(): void {
+    if (!isPlatformBrowser(this.platformId)) {
+      return;
+    }
+
     const user = JSON.parse(
       localStorage.getItem('user') || '{}'
     ) as { username?: string };
@@ -34,18 +41,40 @@ export class EnrollmentsComponent implements OnInit {
       return;
     }
 
+    this.currentUsername = user.username;
+
     this.service
       .getCurrentUserEnrollments(user.username)
       .subscribe({
+        next: (data: EnrollmentSummary[]) => {
+          this.enrollments = data;
+        },
+        error: (err) => {
+          console.error('Error loading enrollments:', err);
+        }
+      });
+  }
 
-      next: (data: EnrollmentSummary[]) => {
-
-        this.enrollments = data;
+  completeEnrollment(enrollmentId: number): void {
+    this.service.completeEnrollment(enrollmentId).subscribe({
+      next: () => {
+        console.log('Enrollment completed successfully');
+        this.loadEnrollments();
       },
-
       error: (err) => {
+        console.error('Error completing enrollment:', err);
+      }
+    });
+  }
 
-        console.error(err);
+  cancelEnrollment(enrollmentId: number): void {
+    this.service.cancelEnrollment(enrollmentId).subscribe({
+      next: () => {
+        console.log('Enrollment cancelled successfully');
+        this.loadEnrollments();
+      },
+      error: (err) => {
+        console.error('Error cancelling enrollment:', err);
       }
     });
   }

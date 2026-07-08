@@ -1,18 +1,52 @@
 <div class="container mt-5">
 
-  <h2 class="mb-4">Enrollments</h2>
+  <h2 class="mb-4">My Enrollments</h2>
 
-  <div class="card p-3 mb-3"
-       *ngFor="let enrollment of enrollments">
+  <div *ngIf="enrollments.length === 0" class="alert alert-info">
+    <p>You have no enrollments yet.</p>
+  </div>
 
-    <h5>{{enrollment.courseTitle}}</h5>
-
-    <p>{{enrollment.username}}</p>
-
-    <p><strong>Provider:</strong> {{enrollment.provider}}</p>
-
-    <p>Status: {{enrollment.status}}</p>
-
+  <div *ngIf="enrollments.length > 0" class="row">
+    <div class="col-md-6" *ngFor="let enrollment of enrollments">
+      <div class="card mb-3">
+        <div class="card-body">
+          <h5 class="card-title">{{enrollment.courseTitle}}</h5>
+          <p class="card-text">
+            <strong>Provider:</strong> {{enrollment.provider}}
+          </p>
+          <p class="card-text">
+            <strong>Enrolled:</strong> {{enrollment.enrolledAt | date:'short'}}
+          </p>
+          <p class="card-text">
+            <span class="badge" 
+                  [ngClass]="{
+                    'bg-success': enrollment.status === 'ACTIVE',
+                    'bg-warning': enrollment.status === 'PENDING',
+                    'bg-danger': enrollment.status === 'CANCELLED',
+                    'bg-secondary': enrollment.status === 'COMPLETED'
+                  }">
+              {{enrollment.status}}
+            </span>
+          </p>
+          <div class="btn-group" role="group">
+            <button 
+              type="button"
+              class="btn btn-sm btn-success"
+              (click)="completeEnrollment(enrollment.id)"
+              [disabled]="enrollment.status === 'COMPLETED' || enrollment.status === 'CANCELLED'">
+              Complete
+            </button>
+            <button 
+              type="button"
+              class="btn btn-sm btn-danger"
+              (click)="cancelEnrollment(enrollment.id)"
+              [disabled]="enrollment.status === 'CANCELLED'">
+              Cancel
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
 
 </div>

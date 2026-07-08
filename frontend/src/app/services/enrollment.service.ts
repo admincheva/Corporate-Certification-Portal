@@ -64,4 +64,20 @@ export class EnrollmentService {
       { withCredentials: true }
     );
   }
+
+  completeEnrollment(enrollmentId: number): Observable<void> {
+    return this.http.put<void>(
+      `${this.apiUrl}/${enrollmentId}/complete`,
+      {},
+      { withCredentials: true }
+    );
+  }
+
+  cancelEnrollment(enrollmentId: number): Observable<void> {
+    return this.http.put<void>(
+      `${this.apiUrl}/${enrollmentId}/cancel`,
+      {},
+      { withCredentials: true }
+    );
+  }
 }
