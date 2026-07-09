@@ -1,111 +1,69 @@
-<div class="dashboard-layout">
+<div class="header">
 
-  <aside class="sidebar">
+  <div>
 
-    <div class="logo">
-      🎓 CorpLearn
-    </div>
+    <h1>
+      Welcome {{ dashboard?.username }}
+      👋
+    </h1>
 
-    <nav>
+    <p>
+      Continue your learning journey
+    </p>
 
-      <a routerLink="/dashboard" class="active">
-        Dashboard
-      </a>
+  </div>
 
-      <a routerLink="/courses">
-        Browse Courses
-      </a>
+</div>
 
-      <a routerLink="/enrollments">
-        My Learning
-      </a>
+<!-- DASHBOARD STATS -->
 
-      <a routerLink="/submissions">
-        My Submissions
-      </a>
+<div class="stats">
 
-    </nav>
+  <div class="card">
 
-    <button 
-      class="logout-btn"
-      (click)="logout()">
-      Logout
-    </button>
+    <h2>
+      {{ dashboard?.enrolledCourses || 0 }}
+    </h2>
 
-  </aside>
+    <span>
+      Enrolled Courses
+    </span>
 
-  <main class="content">
+  </div>
 
-    <div class="header">
+  <div class="card">
 
-      <div>
+    <h2>
+      {{ dashboard?.completedCourses || 0 }}
+    </h2>
 
-        <h1>
-          Welcome {{ dashboard?.username }}
-          👋
-        </h1>
+    <span>
+      Completed Courses
+    </span>
 
-        <p>
-          Continue your learning journey
-        </p>
+  </div>
 
-      </div>
+</div>
 
-    </div>
+<!-- EMPTY STATE -->
 
-    <!-- DASHBOARD STATS -->
+<div class="section">
 
-    <div class="stats">
+  <h2>
+    My Learning Progress
+  </h2>
 
-      <div class="card">
+  <div class="empty-card">
 
-        <h2>
-          {{ dashboard?.enrolledCourses || 0 }}
-        </h2>
+    <h3>
+      Learning Dashboard
+    </h3>
 
-        <span>
-          Enrolled Courses
-        </span>
+    <p>
+      Here you will see your enrolled courses,
+      certifications and learning progress.
+    </p>
 
-      </div>
-
-      <div class="card">
-
-        <h2>
-          {{ dashboard?.completedCourses || 0 }}
-        </h2>
-
-        <span>
-          Completed Courses
-        </span>
-
-      </div>
-
-    </div>
-
-    <!-- EMPTY STATE -->
-
-    <div class="section">
-
-      <h2>
-        My Learning Progress
-      </h2>
-
-      <div class="empty-card">
-
-        <h3>
-          Learning Dashboard
-        </h3>
-
-        <p>
-          Here you will see your enrolled courses,
-          certifications and learning progress.
-        </p>
-
-      </div>
-
-    </div>
-
-  </main>
+  </div>
 
 </div>

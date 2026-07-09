@@ -1,13 +1,12 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { RouterLink } from '@angular/router';
 import { SubmissionService } from '../../services/submission.service';
 import { Submission } from '../../models/submission.model';
 
 @Component({
   selector: 'app-submissions',
   standalone: true,
-  imports: [CommonModule, RouterLink],
+  imports: [CommonModule],
   templateUrl: './submissions.html',
   styleUrl: './submissions.css'
 })

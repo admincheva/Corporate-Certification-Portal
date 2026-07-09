@@ -1,122 +1,86 @@
-<div class="dashboard-layout">
+<div class="header">
 
-  <aside class="sidebar">
+  <div>
 
-    <div class="logo">
-      🎓 CorpLearn
-    </div>
+    <h1>Certificate Submissions 📜</h1>
 
-    <nav>
+    <p>Track your submitted certificates</p>
 
-      <a routerLink="/dashboard" class="nav-link">
-        Dashboard
-      </a>
+  </div>
 
-      <a routerLink="/courses" class="nav-link">
-        Browse Courses
-      </a>
+</div>
 
-      <a routerLink="/enrollments" class="nav-link">
-        My Learning
-      </a>
+<div class="submissions-container">
 
-      <a routerLink="/submissions" class="nav-link active">
-        My Submissions
-      </a>
+  <!-- Empty State -->
+  <div *ngIf="submissions.length === 0" class="empty-card">
+    <h3>No Submissions</h3>
+    <p>You haven't submitted any certificates yet. Go to your learning courses and submit your certificates.</p>
+  </div>
 
-    </nav>
+  <!-- Submissions List -->
+  <div class="submissions-list">
 
-  </aside>
+    <div
+      class="submission-card"
+      *ngFor="let submission of submissions; let i = index"
+    >
 
-  <main class="content">
+      <div class="card-header">
 
-    <div class="header">
+        <h3>{{ submission.courseTitle }}</h3>
 
-      <div>
-
-        <h1>Certificate Submissions 📜</h1>
-
-        <p>Track your submitted certificates</p>
-
-      </div>
-
-    </div>
-
-    <div class="submissions-container">
-
-      <!-- Empty State -->
-      <div *ngIf="submissions.length === 0" class="empty-card">
-        <h3>No Submissions</h3>
-        <p>You haven't submitted any certificates yet. Go to your learning courses and submit your certificates.</p>
-      </div>
-
-      <!-- Submissions List -->
-      <div class="submissions-list">
-
-        <div
-          class="submission-card"
-          *ngFor="let submission of submissions; let i = index"
-        >
-
-          <div class="card-header">
-
-            <h3>{{ submission.courseTitle }}</h3>
-
-            <div [ngClass]="'status-badge status-' + (submission.status | lowercase)">
-              {{ submission.status }}
-            </div>
-
-          </div>
-
-          <div class="card-body">
-
-            <div class="field-group">
-              <label>Certificate Number</label>
-              <p>{{ submission.certificateNumber }}</p>
-            </div>
-
-            <div class="field-group">
-              <label>Amount Paid</label>
-              <p>${{ submission.amountPaid | number: '1.2-2' }}</p>
-            </div>
-
-            <div class="field-group">
-              <label>Enrollment ID</label>
-              <p>#{{ submission.enrollmentId }}</p>
-            </div>
-
-            <div class="field-group" *ngIf="submission.certificateFileUrl">
-              <label>Certificate File</label>
-              <a [href]="submission.certificateFileUrl" target="_blank" class="file-link">
-                📄 View Certificate
-              </a>
-            </div>
-
-            <div class="field-group" *ngIf="submission.invoiceFileUrl">
-              <label>Invoice File</label>
-              <a [href]="submission.invoiceFileUrl" target="_blank" class="file-link">
-                📋 View Invoice
-              </a>
-            </div>
-
-          </div>
-
-          <div class="card-footer">
-            <button
-              class="btn btn-danger"
-              (click)="deleteSubmission(submission.id!)"
-              *ngIf="submission.status === 'PENDING'"
-            >
-              Delete
-            </button>
-          </div>
-
+        <div [ngClass]="'status-badge status-' + (submission.status | lowercase)">
+          {{ submission.status }}
         </div>
 
       </div>
 
+      <div class="card-body">
+
+        <div class="field-group">
+          <label>Certificate Number</label>
+          <p>{{ submission.certificateNumber }}</p>
+        </div>
+
+        <div class="field-group">
+          <label>Amount Paid</label>
+          <p>${{ submission.amountPaid | number: '1.2-2' }}</p>
+        </div>
+
+        <div class="field-group">
+          <label>Enrollment ID</label>
+          <p>#{{ submission.enrollmentId }}</p>
+        </div>
+
+        <div class="field-group" *ngIf="submission.certificateFileUrl">
+          <label>Certificate File</label>
+          <a [href]="submission.certificateFileUrl" target="_blank" class="file-link">
+            📄 View Certificate
+          </a>
+        </div>
+
+        <div class="field-group" *ngIf="submission.invoiceFileUrl">
+          <label>Invoice File</label>
+          <a [href]="submission.invoiceFileUrl" target="_blank" class="file-link">
+            📋 View Invoice
+          </a>
+        </div>
+
+      </div>
+
+      <div class="card-footer">
+        <button
+          class="btn btn-danger"
+          (click)="deleteSubmission(submission.id!)"
+          *ngIf="submission.status === 'PENDING'"
+        >
+          Delete
+        </button>
+      </div>
+
     </div>
 
-  </main>
+  </div>
 
 </div>
