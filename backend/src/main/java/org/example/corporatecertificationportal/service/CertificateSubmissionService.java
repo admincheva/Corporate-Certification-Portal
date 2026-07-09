@@ -12,10 +12,18 @@ import org.example.corporatecertificationportal.mapper.CertificateSubmissionMapp
 import org.example.corporatecertificationportal.repository.CertificateSubmissionRepository;
 import org.example.corporatecertificationportal.repository.EnrollmentRepository;
 import org.example.corporatecertificationportal.repository.UserRepository;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 import lombok.RequiredArgsConstructor;
 
+import java.io.IOException;
+import java.math.BigDecimal;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.List;
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -25,6 +33,9 @@ public class CertificateSubmissionService {
     private final CertificateSubmissionMapper certificateSubmissionMapper;
     private final UserRepository userRepository;
     private final EnrollmentRepository enrollmentRepository;
+
+    @Value("${app.upload.dir:uploads}")
+    private String uploadDir;
 
     public CertificateSubmissionDTO create(CertificateSubmissionDTO dto) {
         User user = userRepository.findByUsername(dto.getUsername())
@@ -44,6 +55,51 @@ public class CertificateSubmissionService {
                 .build();
 
         return certificateSubmissionMapper.toDTO(certificateSubmissionRepository.save(submission));
+    }
+
+    public CertificateSubmissionDTO createWithFiles(
+            String username,
+            Long enrollmentId,
+            String certificateNumber,
+            BigDecimal amountPaid,
+            MultipartFile certificateFile,
+            MultipartFile invoiceFile) {
+
+        User user = userRepository.findByUsername(username)
+                .orElseThrow(UserNotFoundException::new);
+
+        Enrollment enrollment = enrollmentRepository.findById(enrollmentId)
+                .orElseThrow(EnrollmentNotFoundException::new);
+
+        String certUrl = saveFile(certificateFile, "certificates");
+        String invoiceUrl = (invoiceFile != null && !invoiceFile.isEmpty())
+                ? saveFile(invoiceFile, "invoices")
+                : null;
+
+        CertificateSubmission submission = CertificateSubmission.builder()
+                .user(user)
+                .enrollment(enrollment)
+                .certificateFileUrl(certUrl)
+                .invoiceFileUrl(invoiceUrl)
+                .certificateNumber(certificateNumber)
+                .amountPaid(amountPaid)
+                .status(SubmissionStatus.PENDING)
+                .build();
+
+        return certificateSubmissionMapper.toDTO(certificateSubmissionRepository.save(submission));
+    }
+
+    private String saveFile(MultipartFile file, String subfolder) {
+        try {
+            Path dir = Paths.get(uploadDir, subfolder);
+            Files.createDirectories(dir);
+            String filename = UUID.randomUUID() + "_" + file.getOriginalFilename();
+            Path target = dir.resolve(filename);
+            file.transferTo(target.toFile());
+            return "/uploads/" + subfolder + "/" + filename;
+        } catch (IOException e) {
+            throw new RuntimeException("Failed to store file: " + e.getMessage(), e);
+        }
     }
 
     public List<CertificateSubmissionDTO> getMySubmissions(String username) {

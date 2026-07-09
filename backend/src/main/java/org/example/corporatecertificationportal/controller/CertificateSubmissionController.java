@@ -6,10 +6,13 @@ import org.example.corporatecertificationportal.dto.CertificateSubmissionDTO;
 import org.example.corporatecertificationportal.entity.CertificateSubmission;
 import org.example.corporatecertificationportal.service.CertificateSubmissionService;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 @RestController
@@ -24,6 +27,21 @@ public class CertificateSubmissionController {
     @PostMapping
     public ResponseEntity<CertificateSubmissionDTO> create(@Valid @RequestBody CertificateSubmissionDTO dto) {
         return ResponseEntity.status(HttpStatus.CREATED).body(submissionService.create(dto));
+    }
+
+    @PreAuthorize("hasAnyRole('ADMIN','EMPLOYEE')")
+    @PostMapping(value = "/upload", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<CertificateSubmissionDTO> createWithFiles(
+            @RequestParam("username") String username,
+            @RequestParam("enrollmentId") Long enrollmentId,
+            @RequestParam("certificateNumber") String certificateNumber,
+            @RequestParam("amountPaid") BigDecimal amountPaid,
+            @RequestParam("certificateFile") MultipartFile certificateFile,
+            @RequestParam(value = "invoiceFile", required = false) MultipartFile invoiceFile) {
+        return ResponseEntity.status(HttpStatus.CREATED)
+                .body(submissionService.createWithFiles(
+                        username, enrollmentId, certificateNumber, amountPaid,
+                        certificateFile, invoiceFile));
     }
 
     @PreAuthorize("isAuthenticated()")
