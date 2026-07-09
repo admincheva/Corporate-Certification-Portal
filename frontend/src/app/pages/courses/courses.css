@@ -8,6 +8,27 @@
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
 }
 
+.course-card {
+  transition: box-shadow 0.2s ease;
+}
+
+.course-card:hover {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+}
+
+.card-title {
+  color: #0f172a;
+  font-size: 1rem;
+  font-weight: 700;
+  margin-bottom: 12px;
+}
+
+.card-text {
+  color: #64748b;
+  font-size: 0.9rem;
+  margin-bottom: 6px;
+}
+
 .form-label {
   font-weight: 600;
   margin-bottom: 8px;
@@ -57,17 +78,7 @@ h2 {
   font-weight: 700;
 }
 
-h4 {
-  color: #0f172a;
-  margin-bottom: 12px;
-}
-
 h5 {
   color: #0f172a;
   font-weight: 600;
-}
-
-p {
-  color: #64748b;
-  margin-bottom: 8px;
 }

@@ -27,7 +27,7 @@ export class CoursesComponent implements OnInit {
   filterTitle: string = '';
   filterCategory: string = '';
   filterProvider: string = '';
-  filterRefundable: boolean | undefined = undefined;
+  filterRefundable: string = '';   // '' = all, 'true' = refundable, 'false' = non-refundable
   filterMinPrice: number | null = null;
   maxPrice: number | null = null;
 
@@ -110,8 +110,8 @@ export class CoursesComponent implements OnInit {
         course.provider === this.filterProvider;
 
       const matchesRefundable =
-        this.filterRefundable === undefined ||
-        course.refundable === this.filterRefundable;
+        this.filterRefundable === '' ||
+        course.refundable === (this.filterRefundable === 'true');
 
       const matchesMinPrice =
         this.filterMinPrice === null ||
@@ -130,7 +130,7 @@ export class CoursesComponent implements OnInit {
     this.filterTitle = '';
     this.filterCategory = '';
     this.filterProvider = '';
-    this.filterRefundable = undefined;
+    this.filterRefundable = '';
     this.filterMinPrice = null;
     this.maxPrice = null;
     this.applyFilters();
