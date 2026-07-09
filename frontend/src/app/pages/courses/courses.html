@@ -12,7 +12,7 @@
         class="form-control"
         id="titleFilter"
         [(ngModel)]="filterTitle"
-        (input)="applyFilters()"
+        (ngModelChange)="applyFilters()"
         placeholder="Search by title">
     </div>
 
