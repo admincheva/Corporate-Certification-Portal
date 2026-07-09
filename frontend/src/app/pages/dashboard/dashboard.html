@@ -1,68 +1,142 @@
-<div class="header">
+<!-- HEADER -->
+<div class="dash-header">
+  <p class="greeting">{{ getGreeting() }},</p>
+  <h1>{{ username }} 👋</h1>
+  <p class="subtitle">
+    Continue your learning journey &nbsp;·&nbsp;
+    {{ currentDate | date:'EEEE, MMMM d, y' }}
+  </p>
+</div>
 
-  <div>
+<!-- STATS -->
+<div class="stats-grid">
 
-    <h1>
-      Welcome {{ dashboard?.username }}
-      👋
-    </h1>
+  <div class="stat-card">
+    <div class="stat-icon">📚</div>
+    <div class="stat-value">{{ totalCourses }}</div>
+    <div class="stat-label">Available Courses</div>
+  </div>
 
-    <p>
-      Continue your learning journey
-    </p>
+  <div class="stat-card">
+    <div class="stat-icon">🎓</div>
+    <div class="stat-value">{{ totalEnrollments }}</div>
+    <div class="stat-label">My Enrollments</div>
+  </div>
 
+  <div class="stat-card">
+    <div class="stat-icon">✅</div>
+    <div class="stat-value">{{ completedCourses }}</div>
+    <div class="stat-label">Completed</div>
+  </div>
+
+  <div class="stat-card">
+    <div class="stat-icon">🏆</div>
+    <div class="stat-value">{{ certificates }}</div>
+    <div class="stat-label">Certificates</div>
   </div>
 
 </div>
 
-<!-- DASHBOARD STATS -->
+<!-- MAIN TWO-COLUMN GRID -->
+<div class="main-grid">
 
-<div class="stats">
+  <!-- LEFT COLUMN -->
+  <div class="left-col">
 
-  <div class="card">
+    <!-- RECENT ENROLLMENTS -->
+    <div class="section-card">
+      <h2 class="section-title">Recent Enrollments</h2>
 
-    <h2>
-      {{ dashboard?.enrolledCourses || 0 }}
-    </h2>
+      <ng-container *ngIf="recentEnrollments.length > 0; else noEnrollments">
+        <div class="enrollment-item" *ngFor="let enrollment of recentEnrollments">
+          <div class="enrollment-info">
+            <div class="enrollment-title">{{ enrollment.courseTitle }}</div>
+            <div class="enrollment-provider">{{ enrollment.provider }}</div>
+          </div>
+          <span class="status-badge" [ngClass]="getStatusClass(enrollment.status)">
+            {{ enrollment.status }}
+          </span>
+        </div>
+      </ng-container>
 
-    <span>
-      Enrolled Courses
-    </span>
+      <ng-template #noEnrollments>
+        <p class="empty-text">No enrollments yet. Browse courses to get started.</p>
+      </ng-template>
+
+      <a routerLink="/enrollments" class="section-link">View all enrollments →</a>
+    </div>
+
+    <!-- CERTIFICATION PROGRESS -->
+    <div class="section-card">
+      <h2 class="section-title">Certification Progress</h2>
+
+      <div class="progress-stats">
+        <div class="progress-stat">
+          <span class="progress-number">{{ completedCourses }}</span>
+          <span class="progress-label">Completed</span>
+        </div>
+        <div class="progress-stat">
+          <span class="progress-number">{{ totalEnrollments }}</span>
+          <span class="progress-label">Total Enrolled</span>
+        </div>
+        <div class="progress-stat">
+          <span class="progress-number">{{ progressPercentage }}%</span>
+          <span class="progress-label">Progress</span>
+        </div>
+      </div>
+
+      <div class="progress-bar-wrap">
+        <div class="progress-bar-track">
+          <div class="progress-bar-fill" [style.width.%]="progressPercentage"></div>
+        </div>
+        <span class="progress-pct-label">{{ progressPercentage }}% complete</span>
+      </div>
+    </div>
 
   </div>
 
-  <div class="card">
+  <!-- RIGHT COLUMN -->
+  <div class="right-col">
 
-    <h2>
-      {{ dashboard?.completedCourses || 0 }}
-    </h2>
+    <!-- RECOMMENDED COURSES -->
+    <div class="section-card">
+      <h2 class="section-title">Recommended Courses</h2>
 
-    <span>
-      Completed Courses
-    </span>
+      <ng-container *ngIf="recommendedCourses.length > 0; else noCourses">
+        <div class="course-item" *ngFor="let course of recommendedCourses">
+          <div class="course-item-info">
+            <div class="course-item-title">{{ course.title }}</div>
+            <div class="course-item-meta">{{ course.provider }}<ng-container *ngIf="course.category"> · {{ course.category }}</ng-container></div>
+          </div>
+          <div class="course-item-price">${{ course.price }}</div>
+        </div>
+      </ng-container>
 
-  </div>
+      <ng-template #noCourses>
+        <p class="empty-text">No recommendations available at this time.</p>
+      </ng-template>
 
-</div>
+      <a routerLink="/courses" class="section-link">Browse all courses →</a>
+    </div>
 
-<!-- EMPTY STATE -->
-
-<div class="section">
-
-  <h2>
-    My Learning Progress
-  </h2>
-
-  <div class="empty-card">
-
-    <h3>
-      Learning Dashboard
-    </h3>
-
-    <p>
-      Here you will see your enrolled courses,
-      certifications and learning progress.
-    </p>
+    <!-- QUICK ACTIONS -->
+    <div class="section-card">
+      <h2 class="section-title">Quick Actions</h2>
+      <div class="actions-grid">
+        <a routerLink="/courses" class="action-btn">
+          <span class="action-icon">📚</span>
+          <span>Browse Courses</span>
+        </a>
+        <a routerLink="/enrollments" class="action-btn">
+          <span class="action-icon">🎓</span>
+          <span>My Enrollments</span>
+        </a>
+        <a routerLink="/submissions" class="action-btn">
+          <span class="action-icon">📋</span>
+          <span>Certificate Submissions</span>
+        </a>
+      </div>
+    </div>
 
   </div>
 
