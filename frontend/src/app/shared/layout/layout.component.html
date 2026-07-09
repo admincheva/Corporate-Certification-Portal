@@ -1,0 +1,41 @@
+<div class="dashboard-layout">
+
+  <aside class="sidebar">
+
+    <div class="logo">
+      🎓 CorpLearn
+    </div>
+
+    <nav>
+
+      <a routerLink="/dashboard" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }" class="nav-link">
+        Dashboard
+      </a>
+
+      <a routerLink="/courses" routerLinkActive="active" class="nav-link">
+        Browse Courses
+      </a>
+
+      <a routerLink="/enrollments" routerLinkActive="active" class="nav-link">
+        My Learning
+      </a>
+
+      <a routerLink="/submissions" routerLinkActive="active" class="nav-link">
+        My Submissions
+      </a>
+
+    </nav>
+
+    <button
+      class="logout-btn"
+      (click)="logout()">
+      Logout
+    </button>
+
+  </aside>
+
+  <main class="content">
+    <router-outlet></router-outlet>
+  </main>
+
+</div>
