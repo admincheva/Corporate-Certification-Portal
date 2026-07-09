@@ -50,9 +50,9 @@
         class="form-select"
         [(ngModel)]="filterRefundable"
         (change)="applyFilters()">
-        <option [ngValue]="undefined">All</option>
-        <option [ngValue]="true">Refundable</option>
-        <option [ngValue]="false">Non-refundable</option>
+        <option value="">All</option>
+        <option value="true">Refundable</option>
+        <option value="false">Non-refundable</option>
       </select>
     </div>
   </div>
@@ -97,45 +97,57 @@
   </div>
 </div>
 
-<!-- Courses List -->
-<div class="card mb-3 p-3"
-     *ngFor="let course of courses">
+<!-- Courses Grid -->
+<div class="row g-3">
+  <div class="col-md-6" *ngFor="let course of courses">
+    <div class="card h-100 course-card">
 
-  <h4>{{course.title}}</h4>
+      <div class="card-body d-flex flex-column">
+        <h5 class="card-title">{{course.title}}</h5>
 
-  <p><strong>Provider:</strong> {{course.provider}}</p>
+        <p class="card-text"><strong>Provider:</strong> {{course.provider}}</p>
 
-  <p><strong>Category:</strong> {{course.category}}</p>
+        <p class="card-text"><strong>Category:</strong> {{course.category}}</p>
 
-  <p><strong>Price:</strong> ${{course.price}}</p>
+        <p class="card-text"><strong>Price:</strong> ${{course.price}}</p>
 
-  <p *ngIf="course.refundable !== undefined">
-    <strong>Refundable:</strong> {{course.refundable ? 'Yes' : 'No'}}
-  </p>
+        <p class="card-text" *ngIf="course.refundable !== undefined">
+          <strong>Refundable:</strong>
+          <span class="badge ms-1" [ngClass]="course.refundable ? 'bg-success' : 'bg-secondary'">
+            {{course.refundable ? 'Yes' : 'No'}}
+          </span>
+        </p>
 
-  <p *ngIf="course.externalUrl">
-    <a [href]="course.externalUrl" target="_blank" rel="noopener noreferrer" class="btn btn-outline-secondary btn-sm">
-      Open Course ↗
-    </a>
-  </p>
+        <div class="mt-auto pt-3 d-flex gap-2 flex-wrap">
+          <a *ngIf="course.externalUrl"
+             [href]="course.externalUrl"
+             target="_blank"
+             rel="noopener noreferrer"
+             class="btn btn-outline-secondary btn-sm">
+            Open Course ↗
+          </a>
 
-  <button class="btn btn-primary"
-          type="button"
-          [disabled]="!course.id || enrollingCourseIds.has(course.id || 0) || isUserEnrolled(course.id)"
-          (click)="enroll(course)"
-          [title]="isUserEnrolled(course.id) ? 'Already enrolled' : ''">
-    {{
-      isUserEnrolled(course.id)
-        ? 'Already Enrolled'
-        : enrollingCourseIds.has(course.id || 0)
-          ? 'Enrolling...'
-          : 'Enroll'
-    }}
-  </button>
+          <button class="btn btn-primary btn-sm"
+                  type="button"
+                  [disabled]="!course.id || enrollingCourseIds.has(course.id || 0) || isUserEnrolled(course.id)"
+                  (click)="enroll(course)"
+                  [title]="isUserEnrolled(course.id) ? 'Already enrolled' : ''">
+            {{
+              isUserEnrolled(course.id)
+                ? 'Already Enrolled'
+                : enrollingCourseIds.has(course.id || 0)
+                  ? 'Enrolling...'
+                  : 'Enroll'
+            }}
+          </button>
+        </div>
+      </div>
 
+    </div>
+  </div>
 </div>
 
-<div *ngIf="courses.length === 0" class="alert alert-info">
+<div *ngIf="courses.length === 0" class="alert alert-info mt-3">
   No courses found. Please adjust your filters.
 </div>
 
