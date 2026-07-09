@@ -1,9 +1,12 @@
 package org.example.corporatecertificationportal.controller;
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.example.corporatecertificationportal.dto.CertificateSubmissionDTO;
 import org.example.corporatecertificationportal.entity.CertificateSubmission;
 import org.example.corporatecertificationportal.service.CertificateSubmissionService;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
@@ -19,8 +22,8 @@ public class CertificateSubmissionController {
 
     @PreAuthorize("hasAnyRole('ADMIN','EMPLOYEE')")
     @PostMapping
-    public CertificateSubmission create(@RequestBody CertificateSubmissionDTO dto) {
-        return submissionService.create(dto);
+    public ResponseEntity<CertificateSubmissionDTO> create(@Valid @RequestBody CertificateSubmissionDTO dto) {
+        return ResponseEntity.status(HttpStatus.CREATED).body(submissionService.create(dto));
     }
 
     @PreAuthorize("isAuthenticated()")

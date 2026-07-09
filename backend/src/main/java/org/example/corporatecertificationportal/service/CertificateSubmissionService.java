@@ -1,15 +1,19 @@
 package org.example.corporatecertificationportal.service;
 
 import org.example.corporatecertificationportal.dto.CertificateSubmissionDTO;
+import org.example.corporatecertificationportal.entity.CertificateSubmission;
+import org.example.corporatecertificationportal.entity.Enrollment;
+import org.example.corporatecertificationportal.entity.User;
 import org.example.corporatecertificationportal.enums.SubmissionStatus;
 import org.example.corporatecertificationportal.exception.CertificateNotFoundException;
+import org.example.corporatecertificationportal.exception.EnrollmentNotFoundException;
+import org.example.corporatecertificationportal.exception.UserNotFoundException;
 import org.example.corporatecertificationportal.mapper.CertificateSubmissionMapper;
+import org.example.corporatecertificationportal.repository.CertificateSubmissionRepository;
 import org.example.corporatecertificationportal.repository.EnrollmentRepository;
 import org.example.corporatecertificationportal.repository.UserRepository;
 import org.springframework.stereotype.Service;
 import lombok.RequiredArgsConstructor;
-import org.example.corporatecertificationportal.entity.CertificateSubmission;
-import org.example.corporatecertificationportal.repository.CertificateSubmissionRepository;
 
 import java.util.List;
 
@@ -19,22 +23,35 @@ public class CertificateSubmissionService {
 
     private final CertificateSubmissionRepository certificateSubmissionRepository;
     private final CertificateSubmissionMapper certificateSubmissionMapper;
+    private final UserRepository userRepository;
+    private final EnrollmentRepository enrollmentRepository;
 
-    public CertificateSubmission create(CertificateSubmissionDTO dto) {
+    public CertificateSubmissionDTO create(CertificateSubmissionDTO dto) {
+        User user = userRepository.findByUsername(dto.getUsername())
+                .orElseThrow(UserNotFoundException::new);
 
-        CertificateSubmission submission = certificateSubmissionMapper.toEntity(dto);
-        return certificateSubmissionRepository.save(submission);
+        Enrollment enrollment = enrollmentRepository.findById(dto.getEnrollmentId())
+                .orElseThrow(EnrollmentNotFoundException::new);
 
+        CertificateSubmission submission = CertificateSubmission.builder()
+                .user(user)
+                .enrollment(enrollment)
+                .certificateFileUrl(dto.getCertificateFileUrl())
+                .invoiceFileUrl(dto.getInvoiceFileUrl())
+                .certificateNumber(dto.getCertificateNumber())
+                .amountPaid(dto.getAmountPaid())
+                .status(SubmissionStatus.PENDING)
+                .build();
+
+        return certificateSubmissionMapper.toDTO(certificateSubmissionRepository.save(submission));
     }
 
-    public List<CertificateSubmissionDTO> getMySubmissions(String username){
+    public List<CertificateSubmissionDTO> getMySubmissions(String username) {
         return certificateSubmissionMapper
-                .toDTOList(certificateSubmissionRepository
-                        .findByUserUsername(username));
+                .toDTOList(certificateSubmissionRepository.findByUserUsername(username));
     }
 
     public List<CertificateSubmissionDTO> getAll() {
-
         return certificateSubmissionMapper
                 .toDTOList(certificateSubmissionRepository.findAll());
     }
@@ -44,13 +61,13 @@ public class CertificateSubmissionService {
                 .orElseThrow(CertificateNotFoundException::new);
     }
 
-    public void rejectSubmission(Long id){
+    public void rejectSubmission(Long id) {
         CertificateSubmission submission = getById(id);
         submission.setStatus(SubmissionStatus.REJECTED);
         certificateSubmissionRepository.save(submission);
     }
 
-    public void approveSubmission(Long id){
+    public void approveSubmission(Long id) {
         CertificateSubmission submission = getById(id);
         submission.setStatus(SubmissionStatus.APPROVED);
         certificateSubmissionRepository.save(submission);
