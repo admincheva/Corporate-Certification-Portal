@@ -1,0 +1,176 @@
+<div class="submission-form-container">
+
+  <!-- Success Message -->
+  <div *ngIf="successMessage" class="alert alert-success">
+    <span class="alert-icon">✓</span>
+    {{ successMessage }}
+  </div>
+
+  <!-- Error Message -->
+  <div *ngIf="errorMessage" class="alert alert-error">
+    <span class="alert-icon">⚠</span>
+    {{ errorMessage }}
+  </div>
+
+  <!-- Form Card -->
+  <div class="form-card">
+
+    <div class="form-header">
+      <h2>Submit Your Certificate 📋</h2>
+      <p>Fill in the details of your professional certification</p>
+    </div>
+
+    <form [formGroup]="form" (ngSubmit)="submit()">
+
+      <!-- Course Selection -->
+      <div class="form-group">
+        <label for="enrollmentId">Course <span class="required">*</span></label>
+        <select
+          id="enrollmentId"
+          formControlName="enrollmentId"
+          class="form-control"
+          [disabled]="isLoading">
+
+          <option value="" disabled>
+            {{ isLoading ? 'Loading courses...' : 'Select a course' }}
+          </option>
+
+          <option
+            *ngFor="let enrollment of enrollments"
+            [value]="enrollment.id">
+            {{ enrollment.courseTitle }}
+          </option>
+
+        </select>
+        <div *ngIf="form.get('enrollmentId')?.invalid && form.get('enrollmentId')?.touched" class="error-text">
+          Please select a course
+        </div>
+      </div>
+
+      <!-- Certificate Name -->
+      <div class="form-group">
+        <label for="certificateName">Certificate Name <span class="required">*</span></label>
+        <input
+          id="certificateName"
+          type="text"
+          formControlName="certificateName"
+          class="form-control"
+          placeholder="e.g., AWS Certified Solutions Architect">
+
+        <div *ngIf="form.get('certificateName')?.invalid && form.get('certificateName')?.touched" class="error-text">
+          Certificate name is required
+        </div>
+      </div>
+
+      <!-- Issuing Organization -->
+      <div class="form-group">
+        <label for="issuingOrganization">Issuing Organization <span class="required">*</span></label>
+        <input
+          id="issuingOrganization"
+          type="text"
+          formControlName="issuingOrganization"
+          class="form-control"
+          placeholder="e.g., Amazon Web Services">
+
+        <div *ngIf="form.get('issuingOrganization')?.invalid && form.get('issuingOrganization')?.touched" class="error-text">
+          Organization is required
+        </div>
+      </div>
+
+      <!-- Issue Date -->
+      <div class="form-group">
+        <label for="issueDate">Issue Date <span class="required">*</span></label>
+        <input
+          id="issueDate"
+          type="date"
+          formControlName="issueDate"
+          class="form-control">
+
+        <div *ngIf="form.get('issueDate')?.invalid && form.get('issueDate')?.touched" class="error-text">
+          Issue date is required
+        </div>
+      </div>
+
+      <!-- Certificate URL (Optional) -->
+      <div class="form-group">
+        <label for="certificateUrl">Certificate URL <span class="optional">(Optional)</span></label>
+        <input
+          id="certificateUrl"
+          type="url"
+          formControlName="certificateUrl"
+          class="form-control"
+          placeholder="https://example.com/certificate">
+      </div>
+
+      <!-- Notes (Optional) -->
+      <div class="form-group">
+        <label for="notes">Notes <span class="optional">(Optional)</span></label>
+        <textarea
+          id="notes"
+          formControlName="notes"
+          class="form-control form-textarea"
+          placeholder="Add any additional information about this certificate..."
+          rows="4"></textarea>
+      </div>
+
+      <!-- File Upload -->
+      <div class="form-group">
+        <label for="certificateFileInput">Certificate File <span class="required">*</span></label>
+        <div class="file-upload-wrapper">
+          <input
+            id="certificateFileInput"
+            type="file"
+            #fileInput
+            (change)="onFileSelected($event)"
+            accept=".pdf,.jpg,.jpeg,.png"
+            style="display: none;">
+
+          <button
+            type="button"
+            class="file-upload-btn"
+            (click)="fileInput.click()">
+            <span class="upload-icon">📤</span>
+            Choose File
+          </button>
+
+          <div class="file-info">
+            <p *ngIf="selectedFileName" class="file-name">
+              ✓ {{ selectedFileName }}
+            </p>
+            <p *ngIf="!selectedFileName" class="file-placeholder">
+              No file chosen
+            </p>
+            <p class="file-hint">
+              Supported: PDF, JPG, JPEG, PNG (Max 5MB)
+            </p>
+          </div>
+        </div>
+
+        <div *ngIf="form.get('certificateFile')?.invalid && form.get('certificateFile')?.touched" class="error-text">
+          Certificate file is required
+        </div>
+      </div>
+
+      <!-- Form Actions -->
+      <div class="form-actions">
+        <button
+          type="submit"
+          class="btn btn-primary"
+          [disabled]="isSubmitting || isLoading">
+          {{ isSubmitting ? 'Submitting...' : 'Submit Certificate' }}
+        </button>
+
+        <button
+          type="button"
+          class="btn btn-secondary"
+          (click)="cancel()"
+          [disabled]="isSubmitting">
+          Clear
+        </button>
+      </div>
+
+    </form>
+
+  </div>
+
+</div>

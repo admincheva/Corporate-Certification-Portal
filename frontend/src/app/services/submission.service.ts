@@ -35,6 +35,14 @@ export class SubmissionService {
     );
   }
 
+  createWithFile(formData: FormData): Observable<Submission> {
+    return this.http.post<Submission>(
+      `${this.api}/upload`,
+      formData,
+      { withCredentials: true }
+    );
+  }
+
   getById(id: number): Observable<Submission> {
     return this.http.get<Submission>(
       `${this.api}/id/${id}`,
