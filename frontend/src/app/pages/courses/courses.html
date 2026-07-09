@@ -1,14 +1,40 @@
 <h2 class="mb-4">Courses</h2>
 
 <!-- Filter Section -->
-<div class="card mb-4 p-3">
-  <h5>Filter Courses</h5>
-  
-  <div class="row">
-    <div class="col-md-4">
+<div class="card p-4 mb-4" style="background-color: #f8f9fa;">
+  <h5 class="mb-3">Filter Courses</h5>
+
+  <div class="row mb-3">
+    <div class="col-md-6 mb-3">
+      <label for="titleFilter" class="form-label">Title</label>
+      <input
+        type="text"
+        class="form-control"
+        id="titleFilter"
+        [(ngModel)]="filterTitle"
+        (input)="applyFilters()"
+        placeholder="Search by title">
+    </div>
+
+    <div class="col-md-6 mb-3">
+      <label class="form-label">Provider</label>
+      <select
+        class="form-select"
+        [(ngModel)]="filterProvider"
+        (change)="applyFilters()">
+        <option value="">All Providers</option>
+        <option *ngFor="let prov of providers" [value]="prov">
+          {{ prov }}
+        </option>
+      </select>
+    </div>
+  </div>
+
+  <div class="row mb-3">
+    <div class="col-md-6 mb-3">
       <label class="form-label">Category</label>
-      <select 
-        class="form-select" 
+      <select
+        class="form-select"
         [(ngModel)]="filterCategory"
         (change)="applyFilters()">
         <option value="">All Categories</option>
@@ -18,32 +44,45 @@
       </select>
     </div>
 
-    <div class="col-md-4">
-      <label class="form-label">Provider</label>
-      <select 
-        class="form-select" 
-        [(ngModel)]="filterProvider"
+    <div class="col-md-6 mb-3">
+      <label class="form-label">Refundable</label>
+      <select
+        class="form-select"
+        [(ngModel)]="filterRefundable"
         (change)="applyFilters()">
-        <option value="">All Providers</option>
-        <option *ngFor="let prov of providers" [value]="prov">
-          {{ prov }}
-        </option>
+        <option [ngValue]="undefined">All</option>
+        <option [ngValue]="true">Refundable</option>
+        <option [ngValue]="false">Non-refundable</option>
       </select>
-    </div>
-
-    <div class="col-md-4">
-      <label class="form-label">Max Price</label>
-      <input 
-        type="number" 
-        class="form-control" 
-        [(ngModel)]="maxPrice"
-        (change)="applyFilters()"
-        placeholder="No limit">
     </div>
   </div>
 
-  <button 
-    class="btn btn-secondary mt-3"
+  <div class="row mb-3">
+    <div class="col-md-6 mb-3">
+      <label class="form-label">Minimum Price ($)</label>
+      <input
+        type="number"
+        class="form-control"
+        [(ngModel)]="filterMinPrice"
+        (change)="applyFilters()"
+        placeholder="0"
+        step="0.01">
+    </div>
+
+    <div class="col-md-6 mb-3">
+      <label class="form-label">Maximum Price ($)</label>
+      <input
+        type="number"
+        class="form-control"
+        [(ngModel)]="maxPrice"
+        (change)="applyFilters()"
+        placeholder="No limit"
+        step="0.01">
+    </div>
+  </div>
+
+  <button
+    class="btn btn-secondary mt-1"
     (click)="resetFilters()">
     Reset Filters
   </button>
@@ -61,12 +100,27 @@
 
   <p><strong>Price:</strong> ${{course.price}}</p>
 
+  <p *ngIf="course.refundable !== undefined">
+    <strong>Refundable:</strong> {{course.refundable ? 'Yes' : 'No'}}
+  </p>
+
   <button class="btn btn-primary"
           type="button"
-          [disabled]="!course.id || enrollingCourseIds.has(course.id)"
-          (click)="enroll(course)">
-    {{ enrollingCourseIds.has(course.id || 0) ? 'Enrolling...' : 'Enroll' }}
+          [disabled]="!course.id || enrollingCourseIds.has(course.id || 0) || isUserEnrolled(course.id)"
+          (click)="enroll(course)"
+          [title]="isUserEnrolled(course.id) ? 'Already enrolled' : ''">
+    {{
+      isUserEnrolled(course.id)
+        ? 'Already Enrolled'
+        : enrollingCourseIds.has(course.id || 0)
+          ? 'Enrolling...'
+          : 'Enroll'
+    }}
   </button>
 
+</div>
+
+<div *ngIf="courses.length === 0" class="alert alert-info">
+  No courses found. Please adjust your filters.
 </div>
 
