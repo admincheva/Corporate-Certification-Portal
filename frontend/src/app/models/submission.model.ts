@@ -4,8 +4,13 @@ export interface Submission {
   enrollmentId: number;
   courseTitle: string;
   certificateFileUrl: string;
-  invoiceFileUrl: string;
-  certificateNumber: string;
-  amountPaid: number;
+  invoiceFileUrl?: string;
+  certificateName: string;
+  issuingOrganization: string;
+  issueDate: string;
+  certificateUrl?: string;
+  notes?: string;
+  certificateNumber?: string;
+  amountPaid?: number;
   status: string;
 }

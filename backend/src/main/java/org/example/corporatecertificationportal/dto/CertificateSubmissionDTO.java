@@ -17,6 +17,11 @@ public class CertificateSubmissionDTO {
     private String courseTitle;
     private String certificateFileUrl;
     private String invoiceFileUrl;
+    private String certificateName;
+    private String issuingOrganization;
+    private String issueDate;
+    private String certificateUrl;
+    private String notes;
     private String certificateNumber;
     private BigDecimal amountPaid;
     private SubmissionStatus status;

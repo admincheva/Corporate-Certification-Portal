@@ -4,18 +4,40 @@
 
     <h1>Certificate Submissions 📜</h1>
 
-    <p>Track your submitted certificates</p>
+    <p>Track and submit your professional certificates</p>
 
   </div>
 
+  <button 
+    class="btn-add-submission"
+    (click)="toggleForm()"
+    [class.active]="showForm">
+    {{ showForm ? '✕ Cancel' : '+ Add Certificate' }}
+  </button>
+
 </div>
 
-<div class="submissions-container">
+<!-- Submission Form -->
+<div *ngIf="showForm" class="form-section">
+  <app-submission-form 
+    [username]="username"
+    (submissionSuccess)="onSubmissionSuccess()">
+  </app-submission-form>
+</div>
+
+<!-- Submissions List -->
+<div *ngIf="!showForm" class="submissions-container">
 
   <!-- Empty State -->
-  <div *ngIf="submissions.length === 0" class="empty-card">
-    <h3>No Submissions</h3>
-    <p>You haven't submitted any certificates yet. Go to your learning courses and submit your certificates.</p>
+  <div *ngIf="submissions.length === 0 && !isLoading" class="empty-card">
+    <h3>No Submissions Yet 📝</h3>
+    <p>You haven't submitted any certificates yet. Click the button above to submit your first certificate.</p>
+  </div>
+
+  <!-- Loading State -->
+  <div *ngIf="isLoading" class="loading-card">
+    <div class="spinner"></div>
+    <p>Loading your submissions...</p>
   </div>
 
   <!-- Submissions List -->
@@ -28,7 +50,7 @@
 
       <div class="card-header">
 
-        <h3>{{ submission.courseTitle }}</h3>
+        <h3>{{ submission.certificateName }}</h3>
 
         <div [ngClass]="'status-badge status-' + (submission.status | lowercase)">
           {{ submission.status }}
@@ -39,31 +61,36 @@
       <div class="card-body">
 
         <div class="field-group">
-          <label>Certificate Number</label>
-          <p>{{ submission.certificateNumber }}</p>
+          <label>Course</label>
+          <p>{{ submission.courseTitle }}</p>
         </div>
 
         <div class="field-group">
-          <label>Amount Paid</label>
-          <p>${{ submission.amountPaid | number: '1.2-2' }}</p>
+          <label>Organization</label>
+          <p>{{ submission.issuingOrganization }}</p>
         </div>
 
         <div class="field-group">
-          <label>Enrollment ID</label>
-          <p>#{{ submission.enrollmentId }}</p>
+          <label>Issue Date</label>
+          <p>{{ submission.issueDate | date: 'shortDate' }}</p>
+        </div>
+
+        <div class="field-group" *ngIf="submission.certificateUrl">
+          <label>Certificate URL</label>
+          <a [href]="submission.certificateUrl" target="_blank" class="file-link">
+            🔗 View Online
+          </a>
+        </div>
+
+        <div class="field-group" *ngIf="submission.notes">
+          <label>Notes</label>
+          <p class="notes-text">{{ submission.notes }}</p>
         </div>
 
         <div class="field-group" *ngIf="submission.certificateFileUrl">
           <label>Certificate File</label>
           <a [href]="submission.certificateFileUrl" target="_blank" class="file-link">
             📄 View Certificate
-          </a>
-        </div>
-
-        <div class="field-group" *ngIf="submission.invoiceFileUrl">
-          <label>Invoice File</label>
-          <a [href]="submission.invoiceFileUrl" target="_blank" class="file-link">
-            📋 View Invoice
           </a>
         </div>
 

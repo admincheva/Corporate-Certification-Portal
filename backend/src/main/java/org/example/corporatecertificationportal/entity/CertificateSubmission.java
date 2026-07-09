@@ -34,13 +34,28 @@ public class CertificateSubmission {
     @Column(nullable = false)
     private String certificateFileUrl;
 
-    @Column(nullable = false)
+    @Column(nullable = true)
     private String invoiceFileUrl;
 
     @Column(nullable = false)
-    private String certificateNumber;
+    private String certificateName;
 
     @Column(nullable = false)
+    private String issuingOrganization;
+
+    @Column(nullable = false)
+    private String issueDate;
+
+    @Column(nullable = true)
+    private String certificateUrl;
+
+    @Column(nullable = true, columnDefinition = "TEXT")
+    private String notes;
+
+    @Column(nullable = true)
+    private String certificateNumber;
+
+    @Column(nullable = true)
     private BigDecimal amountPaid;
 
     @Enumerated(EnumType.STRING)
